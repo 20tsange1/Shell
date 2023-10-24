@@ -101,6 +101,28 @@ class GrepCommand(Command):
                             out.append(f"{file}:{line}")
                         else:
                             out.append(line)
+
+                            
+class SortCommand(Command):
+    def execute(self, args, out):
+        reverse = False
+        filename = None
+
+        for arg in args:
+            if arg == '-r':
+                reverse = True
+            else:
+                filename = arg
+
+        if filename:
+            with open(filename, 'r') as file:
+                lines = file.readlines()
+        else:
+            #if no filename, read from stdin
+            lines = sys.stdin.readlines()
+
+        sorted_lines = sorted(lines, reverse=reverse)
+        out.extend(sorted_lines)
                             
                             
 class CutCommand(Command):
@@ -136,8 +158,3 @@ class CutCommand(Command):
 
         output.append('\n')
         out.extend(output)
-
-
-
-
-
