@@ -6,7 +6,6 @@ from collections import deque
 from glob import glob
 from commands import *;
 
-
 class UnsafeCommandWrapper(Command):
     def __init__(self, wrapped_command):
         self.wrapped_command = wrapped_command
@@ -21,7 +20,7 @@ class UnsafeCommandWrapper(Command):
 
 
 class CommandParser:
-    def __init__(self, unsafe=True):
+    def __init__(self, unsafe=False):
         self.command_map = {
             "pwd": PwdCommand(),
             "cd": CdCommand(),
@@ -30,7 +29,9 @@ class CommandParser:
             "cat": CatCommand(),
             "head": HeadCommand(),
             "tail": TailCommand(),
-            "grep": GrepCommand(),
+            "grep": GrepCommand(),  
+            "sort": SortCommand(),         
+            "cut": CutCommand(),
             "find": FindCommand(),
         }
         #add unsafe commands to map
