@@ -157,7 +157,9 @@ class CutCommand(Command):
             output.append(''.join(line_output))
 
         output.append('\n')
-        out.extend(output)class FindCommand(Command):        
+        out.extend(output) 
+    
+class FindCommand(Command):
     def execute(self, args, out):
         found = []
 
