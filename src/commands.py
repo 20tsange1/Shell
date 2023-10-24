@@ -101,4 +101,43 @@ class GrepCommand(Command):
                             out.append(f"{file}:{line}")
                         else:
                             out.append(line)
+                            
+                            
+class CutCommand(Command):
+    def execute(self, args, out):
+        if len(args) not in [1, 3]:
+            raise ValueError("Wrong number of command line arguments")
+        
+        if len(args) == 1:
+            bytes_range = args[0]
+            lines = sys.stdin.readlines()
+        else:
+            if args[0] != "-b":
+                raise ValueError("Wrong flags")
+            bytes_range = args[1]
+            with open(args[2], 'r') as file:
+                lines = file.readlines()
+
+        output = []
+        for line in lines:
+            line_output = []
+            line = line.strip()
+            byte_ranges = bytes_range.split(',')
+            for byte_range in byte_ranges:
+                if '-' in byte_range:
+                    start, end = byte_range.split('-')
+                    start = int(start) - 1 if start else None
+                    end = int(end) if end else None
+                    line_output.append(line[start:end])
+                else:
+                    pos = int(byte_range)
+                    line_output.append(line[pos - 1])
+            output.append(''.join(line_output))
+
+        output.append('\n')
+        out.extend(output)
+
+
+
+
 

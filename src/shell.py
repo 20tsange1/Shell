@@ -21,7 +21,7 @@ class UnsafeCommandWrapper(Command):
 
 
 class CommandParser:
-    def __init__(self, unsafe=True):
+    def __init__(self, unsafe=False):
         self.command_map = {
             "pwd": PwdCommand(),
             "cd": CdCommand(),
@@ -31,6 +31,7 @@ class CommandParser:
             "head": HeadCommand(),
             "tail": TailCommand(),
             "grep": GrepCommand(),
+            "cut": CutCommand(),
         }
         #add unsafe commands to map
         if (unsafe):
