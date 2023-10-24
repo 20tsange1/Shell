@@ -6,6 +6,20 @@ from collections import deque
 from glob import glob
 from commands import *;
 
+
+class UnsafeCommandWrapper(Command):
+    def __init__(self, wrapped_command):
+        self.wrapped_command = wrapped_command
+
+    def execute(self, args, out):
+        try:
+            # Execute the wrapped command
+            self.wrapped_command.execute(args, out)
+        except Exception as e:
+            # Catch any exceptions and print them to out
+            out.append(f"An exception occurred: {str(e)}\n")
+
+
 class CommandParser:
     def __init__(self, unsafe=True):
         self.command_map = {
@@ -21,6 +35,12 @@ class CommandParser:
         #add unsafe commands to map
         if (unsafe):
             self.add_unsafe_commands()
+
+    def add_unsafe_commands(self):
+        unsafe = {}
+        for command_name, command in self.command_map.items():
+            unsafe[f"_{command_name}"] = UnsafeCommandWrapper(command)
+        self.command_map.update(unsafe)
 
     def parse(self, cmdline, out):
         raw_commands = []
