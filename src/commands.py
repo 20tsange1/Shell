@@ -102,3 +102,37 @@ class GrepCommand(Command):
                         else:
                             out.append(line)
 
+class FindCommand(Command):        
+    def execute(self, args, out):
+        found = []
+
+        def findItem(directoryName, itemName, prev, found):
+            if os.path.isdir(directoryName):
+                for f in listdir(directoryName):
+                    if not f.startswith("."):
+                        if itemName in prev or itemName in f:
+                            found.append(prev + "/" + f)
+                        findItem(prev + "/" + f, itemName, prev + "/" + f, found)
+        
+        if len(args) == 0 or len(args) > 3:
+            raise ValueError("wrong number of command line arguments")
+        else:
+            # Without PATH name.
+            if len(args) == 2 and args[0] == "-name":
+                ls_dir = os.getcwd()
+                find = args[1].strip('"*')
+                findItem(ls_dir, find, ".", found)
+
+            # With PATH name.
+            elif len(args) == 3 and args[1] == "-name":
+                ls_dir = args[0]
+                if os.path.isdir(ls_dir):
+                    find = args[2].strip('"*')
+                    findItem(ls_dir, find, ls_dir, found)
+                else:
+                    raise ValueError("Invalid Directory Name")
+            else:
+                raise ValueError("Wrong Flags")
+
+        for i in found:
+            out.append(i + "\n")

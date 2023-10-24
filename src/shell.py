@@ -31,6 +31,7 @@ class CommandParser:
             "head": HeadCommand(),
             "tail": TailCommand(),
             "grep": GrepCommand(),
+            "find": FindCommand(),
         }
         #add unsafe commands to map
         if (unsafe):
