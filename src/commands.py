@@ -159,6 +159,7 @@ class CutCommand(Command):
         output.append('\n')
         out.extend(output) 
     
+    
 class FindCommand(Command):
     def execute(self, args, out):
         found = []
@@ -172,7 +173,7 @@ class FindCommand(Command):
                         findItem(prev + "/" + f, itemName, prev + "/" + f, found)
         
         if len(args) == 0 or len(args) > 3:
-            raise ValueError("wrong number of command line arguments")
+            raise ValueError("Wrong number of command line arguments")
         else:
             # Without PATH name.
             if len(args) == 2 and args[0] == "-name":
@@ -193,3 +194,67 @@ class FindCommand(Command):
 
         for i in found:
             out.append(i + "\n")
+
+
+class UniqCommand(Command):
+        def execute(self, args, out):
+
+            def uniqueFile(fileName, ignore):
+                returnText = ""
+
+                file = open(fileName, 'r')
+                l = file.readlines()
+                file.close()
+                l.append("")
+
+                for i in range(len(l) - 1):
+                    if ignore:
+                        if l[i].lower() == l[i + 1].lower():
+                            pass
+                        else:
+                            returnText += l[i]
+                    else:
+                        if l[i] == l[i + 1]:
+                            pass
+                        else:
+                            returnText += l[i]
+
+                file = open(fileName, 'w')
+                file.write(returnText)
+                file.close()
+                return
+
+            def uniqueStdin(ignore):
+                returnText = ""
+                l = sys.stdin.readlines()
+                l.append("")
+                for i in range(len(l) - 1):
+                    if ignore:
+                        if l[i].lower() == l[i + 1].lower():
+                            pass
+                        else:
+                            returnText += l[i]
+                    else:
+                        if l[i] == l[i + 1]:
+                            pass
+                        else:
+                            returnText += l[i]
+                return returnText
+
+
+            if len(args) == 0:
+                out.append(uniqueStdin(False))
+            elif len(args) == 1:
+                if args[0] == '-i':
+                    out.append(uniqueStdin(True))
+                elif os.path.isfile(args[0]):
+                    uniqueFile(args[0], False)
+                else:
+                    raise ValueError("Wrong flags")
+            elif len(args) == 2:
+                if args[0] == '-i' and os.path.isfile(args[1]):
+                    uniqueFile(args[1], True)
+                elif args[0] != '-i':
+                    raise ValueError("Wrong flags")
+            else:
+                raise ValueError("Wrong number of command line arguments")

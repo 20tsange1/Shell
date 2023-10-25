@@ -33,6 +33,7 @@ class CommandParser:
             "sort": SortCommand(),         
             "cut": CutCommand(),
             "find": FindCommand(),
+            "uniq": UniqCommand(),
         }
         #add unsafe commands to map
         if (unsafe):
