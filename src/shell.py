@@ -20,7 +20,7 @@ class UnsafeCommandWrapper(Command):
 
 
 class CommandParser:
-    def __init__(self, unsafe=False):
+    def __init__(self, unsafe=True):
         self.command_map = {
             "pwd": PwdCommand(),
             "cd": CdCommand(),

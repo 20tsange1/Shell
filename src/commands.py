@@ -12,7 +12,7 @@ class Command:
 
 class PwdCommand(Command):
     def execute(self, args, out):
-        out.append(os.getcwd())
+        out.append(os.getcwd() + "\n")
 
 
 class CdCommand(Command):
@@ -45,6 +45,7 @@ class CatCommand(Command):
         for a in args:
             with open(a) as f:
                 out.append(f.read())
+        out.append("\n")
 
 
 class HeadCommand(Command):
@@ -198,29 +199,25 @@ class FindCommand(Command):
 
 class UniqCommand(Command):
         def execute(self, args, out):
-
-            def uniqueFile(fileName, ignore):
+            def returnUniq(l, ignore):
                 returnText = ""
-
+                for i in range(len(l) - 1):
+                    if ignore:
+                        if l[i].strip("\n").lower() != l[i + 1].strip("\n").lower():
+                            returnText += l[i]
+                    else:
+                        if l[i].strip("\n") != l[i + 1].strip("\n"):
+                            returnText += l[i]
+                return returnText
+        
+            def uniqueFile(fileName, ignore):
                 file = open(fileName, 'r')
                 l = file.readlines()
                 file.close()
                 l.append("")
 
-                for i in range(len(l) - 1):
-                    if ignore:
-                        if l[i].lower() == l[i + 1].lower():
-                            pass
-                        else:
-                            returnText += l[i]
-                    else:
-                        if l[i] == l[i + 1]:
-                            pass
-                        else:
-                            returnText += l[i]
-
                 file = open(fileName, 'w')
-                file.write(returnText)
+                file.write(returnUniq(l, ignore))
                 file.close()
                 return
 
@@ -228,18 +225,7 @@ class UniqCommand(Command):
                 returnText = ""
                 l = sys.stdin.readlines()
                 l.append("")
-                for i in range(len(l) - 1):
-                    if ignore:
-                        if l[i].lower() == l[i + 1].lower():
-                            pass
-                        else:
-                            returnText += l[i]
-                    else:
-                        if l[i] == l[i + 1]:
-                            pass
-                        else:
-                            returnText += l[i]
-                return returnText
+                return returnUniq(l, ignore)
 
 
             if len(args) == 0:
