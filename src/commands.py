@@ -118,6 +118,8 @@ class SortCommand(Command):
         if filename:
             with open(filename, 'r') as file:
                 lines = file.readlines()
+                lines[-1] += '\n' if (lines[-1][-1] != '\n') else '' 
+
         else:
             #if no filename, read from stdin
             lines = sys.stdin.readlines()
@@ -160,7 +162,7 @@ class CutCommand(Command):
         output.append('\n')
         out.extend(output) 
     
-    
+
 class FindCommand(Command):
     def execute(self, args, out):
         found = []
@@ -199,22 +201,22 @@ class FindCommand(Command):
 
 class UniqCommand(Command):
         def execute(self, args, out):
+
             def returnUniq(l, ignore):
                 returnText = ""
-                for i in range(len(l) - 1):
+                for i in range(1, len(l)):
                     if ignore:
-                        if l[i].strip("\n").lower() != l[i + 1].strip("\n").lower():
-                            returnText += l[i]
+                        if l[i].strip("\n").lower() != l[i - 1].strip("\n").lower():
+                            returnText += l[i].strip("\n") + "\n"
                     else:
-                        if l[i].strip("\n") != l[i + 1].strip("\n"):
-                            returnText += l[i]
-                return returnText
+                        if l[i].strip("\n") != l[i - 1].strip("\n"):
+                            returnText += l[i].strip("\n") + "\n"
+                return returnText[0:-1]
         
             def uniqueFile(fileName, ignore):
                 file = open(fileName, 'r')
-                l = file.readlines()
+                l = [""] + file.readlines()
                 file.close()
-                l.append("")
 
                 file = open(fileName, 'w')
                 file.write(returnUniq(l, ignore))
@@ -223,20 +225,21 @@ class UniqCommand(Command):
 
             def uniqueStdin(ignore):
                 returnText = ""
-                l = sys.stdin.readlines()
-                l.append("")
+                l = [""] + sys.stdin.readlines()
                 return returnUniq(l, ignore)
 
 
             if len(args) == 0:
-                out.append(uniqueStdin(False))
+
+                out.append(uniqueStdin(False) + "\n")
             elif len(args) == 1:
                 if args[0] == '-i':
-                    out.append(uniqueStdin(True))
+                    out.append(uniqueStdin(True) + "\n")
                 elif os.path.isfile(args[0]):
                     uniqueFile(args[0], False)
                 else:
-                    raise ValueError("Wrong flags")
+                    raise ValueError("Wrong flags or invalid file")
+
             elif len(args) == 2:
                 if args[0] == '-i' and os.path.isfile(args[1]):
                     uniqueFile(args[1], True)
