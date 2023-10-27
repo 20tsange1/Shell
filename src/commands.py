@@ -5,6 +5,7 @@ from os import listdir
 from collections import deque
 from glob import glob
 
+
 class Command:
     def execute(self, args, out):
         pass
@@ -102,7 +103,7 @@ class GrepCommand(Command):
                             out.append(f"{file}:{line}")
                         else:
                             out.append(line)
-                            
+
 
 class SortCommand(Command):
     def execute(self, args, out):
@@ -121,18 +122,18 @@ class SortCommand(Command):
                 lines[-1] += '\n' if (lines[-1][-1] != '\n') else '' 
 
         else:
-            #if no filename, read from stdin
+            # if no filename, read from stdin
             lines = sys.stdin.readlines()
 
         sorted_lines = sorted(lines, reverse=reverse)
         out.extend(sorted_lines)
-                            
-                            
+
+
 class CutCommand(Command):
     def execute(self, args, out):
         if len(args) not in [1, 3]:
             raise ValueError("Wrong number of command line arguments")
-        
+
         if len(args) == 1:
             bytes_range = args[0]
             lines = sys.stdin.readlines()
@@ -160,90 +161,68 @@ class CutCommand(Command):
             output.append(''.join(line_output))
 
         output.append('\n')
-        out.extend(output) 
-    
+        out.extend(output)
+
 
 class FindCommand(Command):
-    def execute(self, args, out):
-        found = []
+    # Needs to be made more precise
+    def findItem(self, directoryName, itemName, prev, flag, exact, out):
+        if os.path.isdir(directoryName):
+            for f in listdir(directoryName):
+                if not f.startswith("."):
+                    if (not flag) and ((exact and (itemName == f)) or ((not exact) and (itemName in f))):
+                        out.append(prev + "/" + f + "\n")
+                        self.findItem(prev+"/"+f, itemName, prev+"/"+f, True, exact, out)
+                    elif flag:
+                        out.append(prev + "/" + f + "\n")
+                        self.findItem(prev+"/"+f, itemName, prev+"/"+f, True, exact, out)
+                    else:
+                        self.findItem(prev+"/"+f, itemName, prev+"/"+f, False, exact, out)
 
-        def findItem(directoryName, itemName, prev, found):
-            if os.path.isdir(directoryName):
-                for f in listdir(directoryName):
-                    if not f.startswith("."):
-                        if itemName in prev or itemName in f:
-                            found.append(prev + "/" + f)
-                        findItem(prev + "/" + f, itemName, prev + "/" + f, found)
+        out.extend(output) 
         
-        if len(args) == 0 or len(args) > 3:
-            raise ValueError("Wrong number of command line arguments")
-        else:
-            # Without PATH name.
-            if len(args) == 2 and args[0] == "-name":
-                ls_dir = os.getcwd()
-                find = args[1].strip('"*')
-                findItem(ls_dir, find, ".", found)
 
-            # With PATH name.
-            elif len(args) == 3 and args[1] == "-name":
-                ls_dir = args[0]
-                if os.path.isdir(ls_dir):
-                    find = args[2].strip('"*')
-                    findItem(ls_dir, find, ls_dir, found)
-                else:
-                    raise ValueError("Invalid Directory Name")
+class UniqCommand(Command):
+    def returnUniq(self, lines, ignore):
+        returnText = ""
+        for i in range(1, len(lines)):
+            if ignore:
+                if lines[i].strip("\n").lower() != lines[i-1].strip("\n").lower():
+                    returnText += lines[i].strip("\n") + "\n"
             else:
-                raise ValueError("Wrong Flags")
+                if lines[i].strip("\n") != lines[i - 1].strip("\n"):
+                    returnText += lines[i].strip("\n") + "\n"
+        return returnText[0:-1]
+
+    def uniqueFile(self, fileName, ignore):
+        with open(fileName, 'r') as file:
+            lines = [""] + file.readlines()
+
+        # with open(fileName, 'w') as file:
+        #     file.write(returnUniq(lines, ignore))
+        return self.returnUniq(lines, ignore)
+
+    def uniqueStdin(self, ignore):
+        lines = [""] + sys.stdin.readlines()
+        return self.returnUniq(lines, ignore)
+
+    def execute(self, args, out):
+        if len(args) == 0:
+            out.append(self.uniqueStdin(False) + "\n")
+        elif len(args) == 1:
+            if args[0] == '-i':
+                out.append(self.uniqueStdin(True) + "\n")
+            elif os.path.isfile(args[0]):
+                out.append(self.uniqueFile(args[0], False) + "\n")
+            else:
+                raise ValueError("Wrong flags or invalid file")
+        elif len(args) == 2:
+            if args[0] == '-i' and os.path.isfile(args[1]):
+                out.append(self.uniqueFile(args[1], True) + "\n")
+            elif args[0] != '-i':
+                raise ValueError("Wrong flags")
+        else:
+            raise ValueError("Wrong number of command line arguments")
 
         for i in found:
             out.append(i + "\n")
-
-
-class UniqCommand(Command):
-        def execute(self, args, out):
-
-            def returnUniq(l, ignore):
-                returnText = ""
-                for i in range(1, len(l)):
-                    if ignore:
-                        if l[i].strip("\n").lower() != l[i - 1].strip("\n").lower():
-                            returnText += l[i].strip("\n") + "\n"
-                    else:
-                        if l[i].strip("\n") != l[i - 1].strip("\n"):
-                            returnText += l[i].strip("\n") + "\n"
-                return returnText[0:-1]
-        
-            def uniqueFile(fileName, ignore):
-                file = open(fileName, 'r')
-                l = [""] + file.readlines()
-                file.close()
-
-                file = open(fileName, 'w')
-                file.write(returnUniq(l, ignore))
-                file.close()
-                return
-
-            def uniqueStdin(ignore):
-                returnText = ""
-                l = [""] + sys.stdin.readlines()
-                return returnUniq(l, ignore)
-
-
-            if len(args) == 0:
-
-                out.append(uniqueStdin(False) + "\n")
-            elif len(args) == 1:
-                if args[0] == '-i':
-                    out.append(uniqueStdin(True) + "\n")
-                elif os.path.isfile(args[0]):
-                    uniqueFile(args[0], False)
-                else:
-                    raise ValueError("Wrong flags or invalid file")
-
-            elif len(args) == 2:
-                if args[0] == '-i' and os.path.isfile(args[1]):
-                    uniqueFile(args[1], True)
-                elif args[0] != '-i':
-                    raise ValueError("Wrong flags")
-            else:
-                raise ValueError("Wrong number of command line arguments")
