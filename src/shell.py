@@ -4,7 +4,7 @@ import os
 from os import listdir
 from collections import deque
 from glob import glob
-from commands import *;
+from commands import *
 
 
 class UnsafeCommandWrapper(Command):
@@ -18,7 +18,7 @@ class UnsafeCommandWrapper(Command):
         except Exception as e:
             # Catch any exceptions and print them to out
             out.append(f"An exception occurred: {str(e)}\n")
-
+            
 
 class CommandParser:
     def __init__(self, unsafe=True):
@@ -37,7 +37,7 @@ class CommandParser:
             "uniq": UniqCommand(),
         }
         # add unsafe commands to map
-        if (unsafe):
+        if unsafe:
             self.add_unsafe_commands()
 
     def add_unsafe_commands(self):
@@ -47,35 +47,47 @@ class CommandParser:
         self.command_map.update(unsafe)
 
     def parse(self, cmdline, out):
-        raw_commands = []
-        regex1 = "([^\"'`;]+|\"[^\"]*\"|'[^']*'|`[^`]*`)"
+        # regex1 = "([^\"'`;]+|\"[^\"]*\"|'[^']*'|`[^`]*`)"
         regex1test = "([^;]+)"
         regex2 = "[^\\s\"'`]+|\"([^\"]*)\"|'([^']*)'|`([^`]*)`"
-        for m in re.finditer(regex1test, cmdline):
-            if m.group(0):
-                raw_commands.append(m.group(0))
-        for command in raw_commands:
-            tokens = []
-            for m in re.finditer(regex2, command):
-                if m.group(1) or m.group(2):
-                    quoted = m.group(0)
-                    tokens.append(quoted[1:-1])
-                elif m.group(3):
-                    quoted = m.group(0)
-                    tokens.extend(self.parseHandle(quoted[1:-1]))
-                else:
-                    globbing = glob(m.group(0))
-                    if globbing:
-                        tokens.extend(globbing)
+        
+        pipe_segments = cmdline.split("|")
+        prev_out = None
+        for segment in pipe_segments:
+            segment = segment.rstrip().lstrip()
+            temp_out = deque() if prev_out is None else prev_out
+            raw_commands = []
+            
+            for m in re.finditer(regex1test, segment):
+                if m.group(0):
+                    raw_commands.append(m.group(0))
+            for i, command in enumerate(raw_commands):
+                tokens = []
+                for m in re.finditer(regex2, command):
+                    if m.group(1) or m.group(2):
+                        quoted = m.group(0)
+                        tokens.append(quoted[1:-1])
+                    elif m.group(3):
+                        quoted = m.group(0)
+                        tokens.extend(self.parseHandle(quoted[1:-1]))
                     else:
-                        tokens.append(m.group(0))
-            app = tokens[0]
-            args = tokens[1:]
-
-            if app in self.command_map:
-                self.command_map[app].execute(args, out)
-            else:
-                raise ValueError(f"Unsupported application {app}")
+                        globbing = glob(m.group(0))
+                        if globbing:
+                            tokens.extend(globbing)
+                        else:
+                            tokens.append(m.group(0))
+                app = tokens[0]
+                args = tokens[1:]
+                
+                if app in self.command_map:
+                    if prev_out is not None and i == 0:
+                        args.append(prev_out.popleft())  # pass relayed input as last argument
+                    self.command_map[app].execute(args, temp_out)
+                else:
+                    raise ValueError(f"Unsupported application {app}")
+                    
+            prev_out = temp_out
+        out.extend(prev_out)
 
     def parseHandle(self, cmdline):
         output = []

@@ -25,7 +25,7 @@ class CdCommand(Command):
 
 class EchoCommand(Command):
     def execute(self, args, out):
-        out.append(" ".join(args) + "\n")
+        out.append(" ".join(args))
 
 
 class LsCommand(Command):
@@ -131,15 +131,17 @@ class SortCommand(Command):
 
 class CutCommand(Command):
     def execute(self, args, out):
-        if len(args) not in [1, 3]:
+        if len(args) == 0 or len(args) > 3:
             raise ValueError("Wrong number of command line arguments")
-
-        if len(args) == 1:
-            bytes_range = args[0]
+        elif len(args) == 2:
+            # if no filename, read from stdin
+            if args[0] != "-b":
+                raise ValueError("Wrong flag")
+            bytes_range = args[1]
             lines = sys.stdin.readlines()
         else:
             if args[0] != "-b":
-                raise ValueError("Wrong flags")
+                raise ValueError("Wrong flag")
             bytes_range = args[1]
             with open(args[2], 'r') as file:
                 lines = file.readlines()
