@@ -1,6 +1,3 @@
-abcdefghijklmnopqrstuvwxyz
-abcdefghijklmnopqrstuvwxyz
-dash
-dash
-big dash
-dash
+AAA
+BBB
+AAA

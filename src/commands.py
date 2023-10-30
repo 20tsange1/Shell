@@ -154,7 +154,6 @@ class CutCommand(Command):
             with open(args[2], 'r') as file:
                 lines = file.readlines()
 
-        output = []
         for line in lines:
             line_output = []
             line = line.strip()
@@ -168,11 +167,11 @@ class CutCommand(Command):
                 else:
                     pos = int(byte_range)
                     line_output.append(line[pos - 1])
-            output.append(''.join(line_output))
+            out.extend(line_output)
+            out.append('\n')
 
-        output.append('\n')
-        out.extend(output)
 
+            
 
 class FindCommand(Command):
     def execute(self, args, out):
@@ -211,43 +210,40 @@ class FindCommand(Command):
         
 
 class UniqCommand(Command):
-    def returnUniq(self, lines, ignore):
-        returnText = ""
+    def return_uniq(self, lines, ignore_case):
+        return_text = ""
         for i in range(1, len(lines)):
-            if ignore:
-                if lines[i].strip("\n").lower() != lines[i-1].strip("\n").lower():
-                    returnText += lines[i].strip("\n") + "\n"
+            if ignore_case:
+                if lines[i].strip("\n").lower() != lines[i - 1].strip("\n").lower():
+                    return_text += lines[i].strip("\n") + "\n"
             else:
                 if lines[i].strip("\n") != lines[i - 1].strip("\n"):
-                    returnText += lines[i].strip("\n") + "\n"
-        return returnText[0:-1]
+                    return_text += lines[i].strip("\n") + "\n"
+        return return_text[:-1]
 
-    def uniqueFile(self, fileName, ignore):
-        with open(fileName, 'r') as file:
+    def unique_file(self, file_name, ignore_case):
+        with open(file_name, 'r') as file:
             lines = [""] + file.readlines()
-        return self.returnUniq(lines, ignore)
+        return self.return_uniq(lines, ignore_case)
 
-    def uniqueStdin(self, ignore):
+    def unique_stdin(self, ignore_case):
         lines = [""] + sys.stdin.readlines()
-        return self.returnUniq(lines, ignore)
+        return self.return_uniq(lines, ignore_case)
 
     def execute(self, args, out):
         if len(args) == 0:
-            out.append(self.uniqueStdin(False) + "\n")
+            out.append(self.unique_stdin(False) + "\n")
         elif len(args) == 1:
             if args[0] == '-i':
-                out.append(self.uniqueStdin(True) + "\n")
+                out.append(self.unique_stdin(True) + "\n")
             elif os.path.isfile(args[0]):
-                out.append(self.uniqueFile(args[0], False) + "\n")
+                out.append(self.unique_file(args[0], False) + "\n")
             else:
                 raise ValueError("Wrong flags or invalid file")
         elif len(args) == 2:
             if args[0] == '-i' and os.path.isfile(args[1]):
-                out.append(self.uniqueFile(args[1], True) + "\n")
+                out.append(self.unique_file(args[1], True) + "\n")
             elif args[0] != '-i':
                 raise ValueError("Wrong flags")
         else:
             raise ValueError("Wrong number of command line arguments")
-
-        for i in found:
-            out.append(i + "\n")

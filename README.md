@@ -42,7 +42,7 @@ To execute system tests, your first need to build a Docker image named `comp0010
 
 Then, execute system tests using the following command (Python 3.7 or higher is required):
 
-    python system_test/tests.py -v
+    python3 system_test/tests.py -v
 
 Individual system tests (e.g. `test_cat`) can be executed as
 
