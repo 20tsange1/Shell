@@ -4,7 +4,9 @@ import os
 from os import listdir
 from collections import deque
 from glob import glob
-from commands import *
+from commands import *;
+from io_redirection import *;
+import readline
 
 
 class UnsafeCommandWrapper(Command):
@@ -45,6 +47,28 @@ class CommandParser:
         for command_name, command in self.command_map.items():
             unsafe[f"_{command_name}"] = UnsafeCommandWrapper(command)
         self.command_map.update(unsafe)
+    
+    # ISSUE (but works for some reason): input is never restored for either io redirection
+    def redirect_output(self, args, app, append=False):
+        index = args.index('>')
+        if index == len(args) - 1:
+            raise ValueError("No output file specified")
+        else:
+            # print(args[index+1])
+            output_redirector = OutputRedirection(args[index + 1], append)
+            output_redirector.redirect_output()
+            self.command_map[app].execute(args[:index], out)
+            # output_redirector.restore_output()
+            
+    def redirect_input(self, args, app):
+        index = args.index('<')
+        if index == len(args) - 1:
+            raise ValueError("No input file specified")
+        else:
+            input_redirector = InputRedirection(args[index + 1])
+            input_redirector.redirect_input()
+            self.command_map[app].execute(args[:index], out)
+            # input_redirector.restore_input()
 
     def parse(self, cmdline, out):
         # regex1 = "([^\"'`;]+|\"[^\"]*\"|'[^']*'|`[^`]*`)"
@@ -79,12 +103,17 @@ class CommandParser:
                 app = tokens[0]
                 args = tokens[1:]
                 
-                if app in self.command_map:
-                    if prev_out is not None and i == 0:
-                        args.append(prev_out.popleft())  # pass relayed input as last argument
-                    self.command_map[app].execute(args, temp_out)
+                if '>' in args:
+                    self.redirect_output(args, app, False)
+                elif '<' in args:
+                    self.redirect_input(args, app)
                 else:
-                    raise ValueError(f"Unsupported application {app}")
+                    if app in self.command_map:
+                        if prev_out is not None and i == 0:
+                            args.append(prev_out.popleft())  # pass relayed input as last argument
+                        self.command_map[app].execute(args, temp_out)
+                    else:
+                        raise ValueError(f"Unsupported application {app}")
                     
             prev_out = temp_out
         out.extend(prev_out)
@@ -101,7 +130,7 @@ class CommandParser:
 if __name__ == "__main__":
     args_num = len(sys.argv) - 1
     parser = CommandParser()
-    # Need to keep as this is when an argument is passed and not written by a user
+    
     if args_num > 0:
         if args_num != 2:
             raise ValueError("wrong number of command line arguments")
@@ -111,6 +140,7 @@ if __name__ == "__main__":
         parser.parse(sys.argv[2], out)
         while len(out) > 0:
             print(out.popleft(), end="")
+            
     else:
         while True:
             print(os.getcwd() + "> ", end="")
@@ -119,3 +149,4 @@ if __name__ == "__main__":
             parser.parse(cmdline, out)
             while len(out) > 0:
                 print(out.popleft(), end="")
+

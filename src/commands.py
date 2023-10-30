@@ -46,7 +46,7 @@ class CatCommand(Command):
         for a in args:
             with open(a) as f:
                 out.append(f.read())
-        out.append("\n")
+        out.append("\n") if (out[-1] and out[-1][-1] != '\n') else None
 
 
 class HeadCommand(Command):
@@ -110,6 +110,9 @@ class SortCommand(Command):
         reverse = False
         filename = None
 
+        if (len(args) > 2):
+            raise ValueError("Wrong number of command line arguments")
+
         for arg in args:
             if arg == '-r':
                 reverse = True
@@ -119,8 +122,9 @@ class SortCommand(Command):
         if filename:
             with open(filename, 'r') as file:
                 lines = file.readlines()
-                lines[-1] += '\n' if (lines[-1][-1] != '\n') else '' 
-
+                if (len(lines) > 0 and lines[-1][-1] != '\n'):
+                    lines[-1] += '\n'
+                    
         else:
             # if no filename, read from stdin
             lines = sys.stdin.readlines()
