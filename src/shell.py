@@ -92,6 +92,7 @@ class CommandParser:
         pipe_segments = cmdline.split("|")
         prev_out = None
         temp_files = []
+        redirector = None
         for segment in pipe_segments:
             segment = segment.rstrip().lstrip()
             temp_out = deque() if prev_out is None else prev_out
@@ -123,7 +124,6 @@ class CommandParser:
                 app = tokens[0]
                 args = tokens[1:]
                 
-                redirector = None
                 if '>' in tokens:
                     redirector, app, args = self.redirect_output(tokens, False)
                 if '<' in tokens:
@@ -134,7 +134,7 @@ class CommandParser:
                         # pass relayed input as last argument (now defunct)
                         # create a temporary file and write the contents of prev_out
                         with tempfile.NamedTemporaryFile(mode="w", delete=False) as tmp_file:
-                            tmp_file.write(prev_out.popleft())
+                            tmp_file.write(prev_out.pop())
                             temp_files.append(tmp_file.name)
                         args.append(tmp_file.name)
 

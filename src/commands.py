@@ -141,23 +141,21 @@ class CutCommand(Command):
     def execute(self, args, out):
         if len(args) == 0 or len(args) > 3:
             raise ValueError("Wrong number of command line arguments")
-        elif len(args) == 2:
-            # if no filename, read from stdin
-            if args[0] != "-b":
-                raise ValueError("Wrong flag")
-            bytes_range = args[1]
+
+        if args[0] != "-b":
+            raise ValueError("Wrong flag")
+        
+        bytes_range = args[1]    
+        if len(args) == 2:
             lines = sys.stdin.readlines()
         else:
-            if args[0] != "-b":
-                raise ValueError("Wrong flag")
-            bytes_range = args[1]
             with open(args[2], 'r') as file:
                 lines = file.readlines()
 
+        byte_ranges = bytes_range.split(',')
         for line in lines:
             line_output = []
             line = line.strip()
-            byte_ranges = bytes_range.split(',')
             for byte_range in byte_ranges:
                 if '-' in byte_range:
                     start, end = byte_range.split('-')
@@ -167,11 +165,10 @@ class CutCommand(Command):
                 else:
                     pos = int(byte_range)
                     line_output.append(line[pos - 1])
+            
             out.extend(line_output)
             out.append('\n')
 
-
-            
 
 class FindCommand(Command):
     def execute(self, args, out):
