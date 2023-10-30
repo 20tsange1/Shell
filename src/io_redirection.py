@@ -12,7 +12,7 @@ class InputRedirection:
         # for line in sys.stdin:
         #     res = args.append(line.strip())
 
-    def restore_input(self, *args):
+    def restore(self, *args):
         sys.stdin = self.saved_stdin
         self.input_stream.close()
 
@@ -28,6 +28,6 @@ class OutputRedirection:
         self.output_stream = open(self.output_file, mode)
         sys.stdout = self.output_stream
 
-    def restore_output(self, *args):
+    def restore(self, *args):
         sys.stdout = self.saved_stdout
         self.output_stream.close()

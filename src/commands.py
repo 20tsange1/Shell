@@ -53,7 +53,6 @@ class CatCommand(Command):
                   out[-1] += '\n'   
 
 
-
 class HeadCommand(Command):
     def execute(self, args, out):
         if len(args) != 1 and len(args) != 3:
@@ -130,7 +129,6 @@ class SortCommand(Command):
                 if (len(lines) > 0 and lines[-1][-1] != '\n'):
                     lines[-1] += '\n'
 
-                    
         else:
             # if no filename, read from stdin
             lines = sys.stdin.readlines()

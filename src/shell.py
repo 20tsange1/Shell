@@ -49,26 +49,38 @@ class CommandParser:
         self.command_map.update(unsafe)
     
     # ISSUE (but works for some reason): input is never restored for either io redirection
-    def redirect_output(self, args, app, append=False):
-        index = args.index('>')
-        if index == len(args) - 1:
+    def redirect_output(self, tokens, append=False):
+        index = tokens.index('>')
+        if index == len(tokens) - 1:
             raise ValueError("No output file specified")
         else:
             # print(args[index+1])
-            output_redirector = OutputRedirection(args[index + 1], append)
-            output_redirector.redirect_output()
-            self.command_map[app].execute(args[:index], out)
-            # output_redirector.restore_output()
+            path = tokens[index + 1]
+            del tokens[index:index+2]
             
-    def redirect_input(self, args, app):
-        index = args.index('<')
-        if index == len(args) - 1:
+            app = tokens[0]
+            args = tokens[1:]
+            
+            output_redirector = OutputRedirection(path, append)
+            output_redirector.redirect_output()
+            # self.command_map[app].execute(args[:index] + args[index + 2:], out)
+            return output_redirector, app, args
+            
+    def redirect_input(self, tokens):
+        index = tokens.index('<')
+
+        if index == len(tokens) - 1:
             raise ValueError("No input file specified")
         else:
-            input_redirector = InputRedirection(args[index + 1])
+            path = tokens[index + 1]
+            del tokens[index:index+2]
+            
+            app = tokens[0]
+            args = tokens[1:]
+            # print(app)
+            input_redirector = InputRedirection(path)
             input_redirector.redirect_input()
-            self.command_map[app].execute(args[:index], out)
-            # input_redirector.restore_input()
+            return input_redirector, app, args
 
     def parse(self, cmdline, out):
         # regex1 = "([^\"'`;]+|\"[^\"]*\"|'[^']*'|`[^`]*`)"
@@ -99,24 +111,32 @@ class CommandParser:
                         if globbing:
                             tokens.extend(globbing)
                         else:
-                            tokens.append(m.group(0))
+                            if (m.group(0).startswith('<') or m.group(0).startswith('>')) and len(m.group(0)) > 1:
+                                tokens.append(m.group(0)[0])
+                                tokens.append(m.group(0)[1:])  
+                            else:
+                                tokens.append(m.group(0))
+                
                 app = tokens[0]
                 args = tokens[1:]
                 
-                if '>' in args:
-                    self.redirect_output(args, app, False)
-                elif '<' in args:
-                    self.redirect_input(args, app)
+                redirector = None
+                if '>' in tokens:
+                    redirector, app, args = self.redirect_output(tokens, False)
+                if '<' in tokens:
+                    redirector, app, args = self.redirect_input(tokens)
+
+                if app in self.command_map:
+                    if prev_out is not None and i == 0:
+                        args.append(prev_out.popleft())  # pass relayed input as last argument
+                    self.command_map[app].execute(args, temp_out)
                 else:
-                    if app in self.command_map:
-                        if prev_out is not None and i == 0:
-                            args.append(prev_out.popleft())  # pass relayed input as last argument
-                        self.command_map[app].execute(args, temp_out)
-                    else:
-                        raise ValueError(f"Unsupported application {app}")
+                    raise ValueError(f"Unsupported application {app}")
                     
             prev_out = temp_out
         out.extend(prev_out)
+        return redirector
+
 
     def parseHandle(self, cmdline):
         output = []
@@ -137,16 +157,21 @@ if __name__ == "__main__":
         if sys.argv[1] != "-c":
             raise ValueError(f"unexpected command line argument {sys.argv[1]}")
         out = deque()
-        parser.parse(sys.argv[2], out)
+        redirector = parser.parse(sys.argv[2], out)
         while len(out) > 0:
             print(out.popleft(), end="")
-            
+        if (redirector):
+                redirector.restore()
+
     else:
         while True:
             print(os.getcwd() + "> ", end="")
             cmdline = input()
             out = deque()
-            parser.parse(cmdline, out)
+            redirector = parser.parse(cmdline, out)
             while len(out) > 0:
                 print(out.popleft(), end="")
+            if (redirector):
+                redirector.restore()
+
 
