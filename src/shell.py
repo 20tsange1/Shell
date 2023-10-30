@@ -131,21 +131,16 @@ class CommandParser:
 
                 if app in self.command_map:
                     if prev_out is not None and i == 0:
-                        args.append(prev_out.popleft())  # pass relayed input as last argument
+                        # pass relayed input as last argument (now defunct)
+                        # create a temporary file and write the contents of prev_out
+                        with tempfile.NamedTemporaryFile(mode="w", delete=False) as tmp_file:
+                            tmp_file.write(prev_out.popleft())
+                            temp_files.append(tmp_file.name)
+                        args.append(tmp_file.name)
+
                     self.command_map[app].execute(args, temp_out)
                 else:
-                    if app in self.command_map:
-                        if prev_out is not None and i == 0:
-                            # pass relayed input as last argument (now defunct)
-                            # create a temporary file and write the contents of prev_out
-                            with tempfile.NamedTemporaryFile(mode="w", delete=False) as tmp_file:
-                                tmp_file.write(prev_out.popleft())
-                                temp_files.append(tmp_file.name)
-                            args.append(tmp_file.name)
-
-                        self.command_map[app].execute(args, temp_out)
-                    else:
-                        raise ValueError(f"Unsupported application {app}")                   
+                    raise ValueError(f"Unsupported application {app}")                   
             prev_out = temp_out
 
         # Delete all the temporary files
