@@ -43,10 +43,15 @@ class LsCommand(Command):
 
 class CatCommand(Command):
     def execute(self, args, out):
-        for a in args:
-            with open(a) as f:
-                out.append(f.read())
-        out.append("\n") if (out[-1] and out[-1][-1] != '\n') else None
+        if len(args) == 0:
+            out.append(sys.stdin.read())
+        else:
+            for a in args:
+                with open(a) as f:
+                    out.append(f.read())
+            if (len(out) > 0 and out[-1][-1] != '\n'):
+                  out[-1] += '\n'   
+
 
 
 class HeadCommand(Command):
@@ -124,6 +129,7 @@ class SortCommand(Command):
                 lines = file.readlines()
                 if (len(lines) > 0 and lines[-1][-1] != '\n'):
                     lines[-1] += '\n'
+
                     
         else:
             # if no filename, read from stdin
@@ -171,21 +177,39 @@ class CutCommand(Command):
 
 
 class FindCommand(Command):
-    # Needs to be made more precise
-    def findItem(self, directoryName, itemName, prev, flag, exact, out):
-        if os.path.isdir(directoryName):
-            for f in listdir(directoryName):
-                if not f.startswith("."):
-                    if (not flag) and ((exact and (itemName == f)) or ((not exact) and (itemName in f))):
-                        out.append(prev + "/" + f + "\n")
-                        self.findItem(prev+"/"+f, itemName, prev+"/"+f, True, exact, out)
-                    elif flag:
-                        out.append(prev + "/" + f + "\n")
-                        self.findItem(prev+"/"+f, itemName, prev+"/"+f, True, exact, out)
-                    else:
-                        self.findItem(prev+"/"+f, itemName, prev+"/"+f, False, exact, out)
+    def execute(self, args, out):
+        found = []
 
-        out.extend(output) 
+        def findItem(directoryName, itemName, prev, found):
+            if os.path.isdir(directoryName):
+                for f in listdir(directoryName):
+                    if not f.startswith("."):
+                        if itemName in prev or itemName in f:
+                            found.append(prev + "/" + f)
+                        findItem(prev + "/" + f, itemName, prev + "/" + f, found)
+        
+        if len(args) == 0 or len(args) > 3:
+            raise ValueError("Wrong number of command line arguments")
+        else:
+            # Without PATH name.
+            if len(args) == 2 and args[0] == "-name":
+                ls_dir = os.getcwd()
+                find = args[1].strip('"*')
+                findItem(ls_dir, find, ".", found)
+
+            # With PATH name.
+            elif len(args) == 3 and args[1] == "-name":
+                ls_dir = args[0]
+                if os.path.isdir(ls_dir):
+                    find = args[2].strip('"*')
+                    findItem(ls_dir, find, ls_dir, found)
+                else:
+                    raise ValueError("Invalid Directory Name")
+            else:
+                raise ValueError("Wrong Flags")
+
+        for i in found:
+            out.append(i + "\n")
         
 
 class UniqCommand(Command):
@@ -203,9 +227,6 @@ class UniqCommand(Command):
     def uniqueFile(self, fileName, ignore):
         with open(fileName, 'r') as file:
             lines = [""] + file.readlines()
-
-        # with open(fileName, 'w') as file:
-        #     file.write(returnUniq(lines, ignore))
         return self.returnUniq(lines, ignore)
 
     def uniqueStdin(self, ignore):
