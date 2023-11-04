@@ -1,14 +1,13 @@
-import re
 import sys
 import os
 import io
-from os import listdir
 from collections import deque
-from glob import glob
+from antlr4 import *
 from commands import *
 from io_redirection import *
-import tempfile
-import readline
+from antlr.Comp0010ShellLexer import Comp0010ShellLexer
+from antlr.Comp0010ShellParser import Comp0010ShellParser
+from antlr.Comp0010ShellListener import Comp0010ShellListener
 
 
 class UnsafeCommandWrapper(Command):
@@ -24,7 +23,7 @@ class UnsafeCommandWrapper(Command):
             out.append(f"An exception occurred: {str(e)}\n")
             
 
-class CommandParser:
+class CommandExecutor:
     def __init__(self, unsafe=True):
         self.command_map = {
             "pwd": PwdCommand(),
@@ -50,141 +49,111 @@ class CommandParser:
             unsafe[f"_{command_name}"] = UnsafeCommandWrapper(command)
         self.command_map.update(unsafe)
     
-    # ISSUE (but works for some reason): input is never restored for either io redirection
-    def redirect_output(self, tokens, append=False):
-        index = tokens.index('>')
-        if index == len(tokens) - 1:
-            raise ValueError("No output file specified")
-        else:
-            # print(args[index+1])
-            path = tokens[index + 1]
-            del tokens[index:index+2]
-            
-            app = tokens[0]
-            args = tokens[1:]
-            
-            output_redirector = OutputRedirection(path, append)
-            output_redirector.redirect_output()
-            # self.command_map[app].execute(args[:index] + args[index + 2:], out)
-            return output_redirector, app, args
-            
-    def redirect_input(self, tokens):
-        index = tokens.index('<')
 
-        if index == len(tokens) - 1:
-            raise ValueError("No input file specified")
-        else:
-            path = tokens[index + 1]
-            del tokens[index:index+2]
-            
-            app = tokens[0]
-            args = tokens[1:]
-            # print(app)
-            input_redirector = InputRedirection(path)
-            input_redirector.redirect_input()
-            return input_redirector, app, args
+# make a visitor class which traverses the tree and builds a list of commands
+class Visitor(Comp0010ShellListener):
+    def __init__(self):
+        self.command_list = []  # Maintain a list of commands and their arguments
 
-    def parse(self, cmdline, out):
-        # regex1 = "([^\"'`;]+|\"[^\"]*\"|'[^']*'|`[^`]*`)"
-        regex1test = "([^;]+)"
-        regex2 = "[^\\s\"'`]+|\"([^\"]*)\"|'([^']*)'|`([^`]*)`"
+    #OVERRIDDEN METHODS
+    
+    def enterFunction(self, ctx: Comp0010ShellParser.FunctionContext):
+        # When entering a function context, create a command tuple and add it to the list
+        command = ctx.getText()
+        self.command_list.append((command, []))
+
+    def enterArgument(self, ctx: Comp0010ShellParser.ArgumentContext):
+        # add arguments to command list tuple
+        for child in ctx.getChildren():
+            # if child is not of type QuotedContext
+            if child.__class__.__name__ != "QuotedContext":
+                argument = child.getText()
+                self.command_list[-1][1].append(argument)
+    
+    def enterQuoted(self, ctx: Comp0010ShellParser.QuotedContext):
+        # remove the quotes from ctx.getText()
+        self.command_list[-1][1].append(ctx.getText()[1:-1])
         
-        pipe_segments = cmdline.split("|")
-        prev_out = None
-        temp_files = []
-        redirector = None
-        for segment in pipe_segments:
-            segment = segment.rstrip().lstrip()
-            temp_out = deque() if prev_out is None else prev_out
-            raw_commands = []
+    #TODO: implement io redirection here. Use exitRedirection if necessary
+    def enterRedirection(self, ctx: Comp0010ShellParser.RedirectionContext):
+        file = ctx.getChild(1).getText()
+        if ctx.getChild(0).getText() == ">":
+            output_redirection = OutputRedirection(file, False)
+            output_redirection.redirect_output()
+        elif ctx.getChild(0).getText() == "<":
+            input_redirection = InputRedirection(file)
+            input_redirection.redirect_output()
+
+    
+    def exitRedirection(self, ctx: Comp0010ShellParser.RedirectionContext):
+        # restore the redirection
+        
+        
+          
+    
+    #TODO: implement command substitution here. Use exitsubcmd if necessary
+    def enterSubcmd(self, ctx: Comp0010ShellParser.CommandContext):
+        pass
+    
             
-            for m in re.finditer(regex1test, segment):
-                if m.group(0):
-                    raw_commands.append(m.group(0))
-            for i, command in enumerate(raw_commands):
-                tokens = []
-                for m in re.finditer(regex2, command):
-                    if m.group(1) or m.group(2):
-                        quoted = m.group(0)
-                        tokens.append(quoted[1:-1])
-                    elif m.group(3):
-                        quoted = m.group(0)
-                        tokens.extend(self.parseHandle(quoted[1:-1]))
-                    else:
-                        globbing = glob(m.group(0))
-                        if globbing:
-                            tokens.extend(globbing)
-                        else:
-                            if (m.group(0).startswith('<') or m.group(0).startswith('>')) and len(m.group(0)) > 1:
-                                tokens.append(m.group(0)[0])
-                                tokens.append(m.group(0)[1:])  
-                            else:
-                                tokens.append(m.group(0))
-                
-                app = tokens[0]
-                args = tokens[1:]
-                
-                if '>' in tokens:
-                    redirector, app, args = self.redirect_output(tokens, False)
-                if '<' in tokens:
-                    redirector, app, args = self.redirect_input(tokens)
+    #TODO: implement pipe operator here. Use exitPipe if necessary
+    def enterPipe(self, ctx: Comp0010ShellParser.PipeContext):
+        pass
+      
+      
+      
 
-                if app in self.command_map:
-                    if prev_out is not None and i == 0:
-                        # pass relayed input as last argument (now defunct)
-                        # create a temporary file and write the contents of prev_out
-                        with tempfile.NamedTemporaryFile(mode="w", delete=False) as tmp_file:
-                            tmp_file.write(prev_out.pop())
-                            temp_files.append(tmp_file.name)
-                        args.append(tmp_file.name)
+    #HELPER METHODS
 
-                    self.command_map[app].execute(args, temp_out)
-                else:
-                    raise ValueError(f"Unsupported application {app}")                   
-            prev_out = temp_out
+    def execute_commands(self, out):
+        # Execute the commands in the order of traversal
+        command_executor = CommandExecutor()
+        for app, args in self.command_list:
+            if app in command_executor.command_map:
+                command_executor.command_map[app].execute(args, out)
+            else:
+                raise ValueError(f"Unsupported application {app}") 
+        
 
-        # Delete all the temporary files
-        for tmp_file in temp_files:
-            os.remove(tmp_file)
-
-        out.extend(prev_out)
-        return redirector
-
-
-    def parseHandle(self, cmdline):
-        output = []
-        self.parse(cmdline, output)
-        output = ''.join(output).split(' ')
-        for i in range(len(output)):
-            output[i] = output[i].replace("\n", ' ').rstrip()
-        return output
-
-
+def parse(cmdline, out):
+    input_stream = InputStream(io.StringIO(cmdline).read())
+    lexer = Comp0010ShellLexer(input_stream)
+    stream = CommonTokenStream(lexer)
+    parser = Comp0010ShellParser(stream)
+    tree = parser.command()
+    # print_parse_tree(tree)
+    
+    visitor = Visitor()
+    walker = ParseTreeWalker()
+    walker.walk(visitor, tree)
+    visitor.execute_commands(out)
+    
+def print_parse_tree(node, indent=""):
+    if hasattr(node, 'children'):
+        node_type = node.__class__.__name__
+        print(node_type)
+        for child in node.children:
+            print_parse_tree(child, indent)
+    else:
+        print(" " + node.getText())
+    
+    
 if __name__ == "__main__":
     args_num = len(sys.argv) - 1
-    parser = CommandParser()
-    
     if args_num > 0:
         if args_num != 2:
             raise ValueError("wrong number of command line arguments")
         if sys.argv[1] != "-c":
             raise ValueError(f"unexpected command line argument {sys.argv[1]}")
         out = deque()
-        redirector = parser.parse(sys.argv[2], out)
+        parse(sys.argv[2], out)
         while len(out) > 0:
             print(out.popleft(), end="")
-        if (redirector):
-                redirector.restore()
-
     else:
-        while True:
-            print(os.getcwd() + "> ", end="")
-            cmdline = input()
-            out = deque()
-            redirector = parser.parse(cmdline, out)
-            while len(out) > 0:
-                print(out.popleft(), end="")
-            if (redirector):
-                redirector.restore()
-
-
+      while True:
+        print(os.getcwd() + "> ", end="")
+        cmdline = input()
+        out = deque()
+        parse(cmdline, out)
+        while len(out) > 0:
+            print(out.popleft(), end="")
