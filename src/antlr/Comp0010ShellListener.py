@@ -8,6 +8,24 @@ else:
 # This class defines a complete listener for a parse tree produced by Comp0010ShellParser.
 class Comp0010ShellListener(ParseTreeListener):
 
+    # Enter a parse tree produced by Comp0010ShellParser#command.
+    def enterCommand(self, ctx:Comp0010ShellParser.CommandContext):
+        pass
+
+    # Exit a parse tree produced by Comp0010ShellParser#command.
+    def exitCommand(self, ctx:Comp0010ShellParser.CommandContext):
+        pass
+
+
+    # Enter a parse tree produced by Comp0010ShellParser#pipe.
+    def enterPipe(self, ctx:Comp0010ShellParser.PipeContext):
+        pass
+
+    # Exit a parse tree produced by Comp0010ShellParser#pipe.
+    def exitPipe(self, ctx:Comp0010ShellParser.PipeContext):
+        pass
+
+
     # Enter a parse tree produced by Comp0010ShellParser#call.
     def enterCall(self, ctx:Comp0010ShellParser.CallContext):
         pass
@@ -17,12 +35,12 @@ class Comp0010ShellListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by Comp0010ShellParser#quoted.
-    def enterQuoted(self, ctx:Comp0010ShellParser.QuotedContext):
+    # Enter a parse tree produced by Comp0010ShellParser#atom.
+    def enterAtom(self, ctx:Comp0010ShellParser.AtomContext):
         pass
 
-    # Exit a parse tree produced by Comp0010ShellParser#quoted.
-    def exitQuoted(self, ctx:Comp0010ShellParser.QuotedContext):
+    # Exit a parse tree produced by Comp0010ShellParser#atom.
+    def exitAtom(self, ctx:Comp0010ShellParser.AtomContext):
         pass
 
 
@@ -44,39 +62,39 @@ class Comp0010ShellListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by Comp0010ShellParser#function.
-    def enterFunction(self, ctx:Comp0010ShellParser.FunctionContext):
+    # Enter a parse tree produced by Comp0010ShellParser#quoted.
+    def enterQuoted(self, ctx:Comp0010ShellParser.QuotedContext):
         pass
 
-    # Exit a parse tree produced by Comp0010ShellParser#function.
-    def exitFunction(self, ctx:Comp0010ShellParser.FunctionContext):
-        pass
-
-
-    # Enter a parse tree produced by Comp0010ShellParser#pipe.
-    def enterPipe(self, ctx:Comp0010ShellParser.PipeContext):
-        pass
-
-    # Exit a parse tree produced by Comp0010ShellParser#pipe.
-    def exitPipe(self, ctx:Comp0010ShellParser.PipeContext):
+    # Exit a parse tree produced by Comp0010ShellParser#quoted.
+    def exitQuoted(self, ctx:Comp0010ShellParser.QuotedContext):
         pass
 
 
-    # Enter a parse tree produced by Comp0010ShellParser#subcmd.
-    def enterSubcmd(self, ctx:Comp0010ShellParser.SubcmdContext):
+    # Enter a parse tree produced by Comp0010ShellParser#singlequote.
+    def enterSinglequote(self, ctx:Comp0010ShellParser.SinglequoteContext):
         pass
 
-    # Exit a parse tree produced by Comp0010ShellParser#subcmd.
-    def exitSubcmd(self, ctx:Comp0010ShellParser.SubcmdContext):
+    # Exit a parse tree produced by Comp0010ShellParser#singlequote.
+    def exitSinglequote(self, ctx:Comp0010ShellParser.SinglequoteContext):
         pass
 
 
-    # Enter a parse tree produced by Comp0010ShellParser#command.
-    def enterCommand(self, ctx:Comp0010ShellParser.CommandContext):
+    # Enter a parse tree produced by Comp0010ShellParser#backquote.
+    def enterBackquote(self, ctx:Comp0010ShellParser.BackquoteContext):
         pass
 
-    # Exit a parse tree produced by Comp0010ShellParser#command.
-    def exitCommand(self, ctx:Comp0010ShellParser.CommandContext):
+    # Exit a parse tree produced by Comp0010ShellParser#backquote.
+    def exitBackquote(self, ctx:Comp0010ShellParser.BackquoteContext):
+        pass
+
+
+    # Enter a parse tree produced by Comp0010ShellParser#doublequote.
+    def enterDoublequote(self, ctx:Comp0010ShellParser.DoublequoteContext):
+        pass
+
+    # Exit a parse tree produced by Comp0010ShellParser#doublequote.
+    def exitDoublequote(self, ctx:Comp0010ShellParser.DoublequoteContext):
         pass
 
 

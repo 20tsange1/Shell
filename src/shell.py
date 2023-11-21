@@ -7,7 +7,7 @@ from commands import *
 from io_redirection import *
 from antlr.Comp0010ShellLexer import Comp0010ShellLexer
 from antlr.Comp0010ShellParser import Comp0010ShellParser
-from antlr.Comp0010ShellListener import Comp0010ShellListener
+from antlr.Comp0010ShellVisitor import Comp0010ShellVisitor
 
 
 class UnsafeCommandWrapper(Command):
@@ -51,68 +51,181 @@ class CommandExecutor:
     
 
 # make a visitor class which traverses the tree and builds a list of commands
-class Visitor(Comp0010ShellListener):
+
+class Visitor(ParseTreeVisitor):
+
     def __init__(self):
-        self.command_list = []  # Maintain a list of commands and their arguments
+        self.command_list = deque([])
+        self.temporary_command = deque([])
+        self.temporary_quote = deque([])
+        self.output = deque([])
+        self.pipe = deque([])
+        self.inputIO = InputRedirection()
+        self.outputIO = OutputRedirection()
 
-    #OVERRIDDEN METHODS
-    
-    def enterFunction(self, ctx: Comp0010ShellParser.FunctionContext):
-        # When entering a function context, create a command tuple and add it to the list
-        command = ctx.getText()
-        self.command_list.append((command, []))
+    def visitCommand(self, ctx:Comp0010ShellParser.CommandContext):
+        self.visitChildren(ctx)
 
-    def enterArgument(self, ctx: Comp0010ShellParser.ArgumentContext):
-        # add arguments to command list tuple
+
+    # Visit a parse tree produced by Comp0010ShellParser#call.
+    def visitCall(self, ctx:Comp0010ShellParser.CallContext):
+        self.command_list.append([])
+        for i in ctx.getChildren():
+            if i.getChild(0):
+                if i.getChild(0).getChild(0):
+                    if i.getChild(0).getChild(0).getText() == ">":
+                        continue
+            self.visit(i)
+        self.output.append([])
+        # print(self.output, 1)
+        # print(self.command_list, 2)
+        # print(self.temporary_command, 3)
+        # print(self.temporary_quote, 4)
+        # Check for whether there is a pipe or not, need to change to use stdin
+        self.execute_commands(self.command_list[-1], self.output[-1])
+        self.command_list.pop()
+        for i in ctx.getChildren():
+            if i.getChild(0):
+                if i.getChild(0).getChild(0):
+                    if i.getChild(0).getChild(0).getText() == ">":
+                        self.visit(i)
+                    if i.getChild(0).getChild(0).getText() == "<":
+                        self.inputIO.restore()
+                if i.getChild(0).getText() == "<":
+                    self.inputIO.restore()
+        # print(self.output, 5)
+        # print(self.command_list, 6)
+        # print(self.temporary_command, 7)
+        # print(self.temporary_quote, 8)
+        return 
+
+    def visitPipe(self, ctx:Comp0010ShellParser.PipeContext):
+        # Reintroducing previous call's arguments -- Change to taking stdout from previous
+        with open(".temporary.txt", "w") as pipe:
+            self.visit(ctx.getChild(0))
+            pipe.write(''.join(self.output.pop()))
+        
+        inputIO = InputRedirection(".temporary.txt")
+        inputIO.redirect_input()
+
+        self.visit(ctx.getChild(2))
+        
+        inputIO.restore()
+
+
+    def visitRedirection(self, ctx:Comp0010ShellParser.RedirectionContext):
+        index = 2
+        if ctx.getChildCount() == 2:
+            index = 1
+        if ctx.getChild(0).getText() == "<":
+            self.inputIO.input_file = ctx.getChild(index).getChild(0).getText()
+            self.inputIO.redirect_input()
+            # self.inputIO.restore()
+        elif ctx.getChild(0).getText() == ">":
+            self.outputIO.output_file = ctx.getChild(index).getChild(0).getText()
+            self.outputIO.redirect_output("".join(self.output.pop()))
+            # outputIO.restore()
+
+        
+
+    def visitArgument(self, ctx:Comp0010ShellParser.ArgumentContext):
         for child in ctx.getChildren():
-            # if child is not of type QuotedContext
-            if child.__class__.__name__ != "QuotedContext":
-                argument = child.getText()
-                self.command_list[-1][1].append(argument)
-    
-    def enterQuoted(self, ctx: Comp0010ShellParser.QuotedContext):
-        # remove the quotes from ctx.getText()
-        self.command_list[-1][1].append(ctx.getText()[1:-1])
-        
-    #TODO: implement io redirection here. Use exitRedirection if necessary
-    def enterRedirection(self, ctx: Comp0010ShellParser.RedirectionContext):
-        file = ctx.getChild(1).getText()
-        if ctx.getChild(0).getText() == ">":
-            output_redirection = OutputRedirection(file, False)
-            output_redirection.redirect_output()
-        elif ctx.getChild(0).getText() == "<":
-            input_redirection = InputRedirection(file)
-            input_redirection.redirect_output()
+            if child.getChild(0):
+                for child2 in child.getChildren():
+                    if child2.__class__.__name__ == "BackquoteContext":
+                        self.command_list[-1].append("CMD")
+                    else:
+                        self.command_list[-1].append("QUOTE")
+            else:
+                # Globbing of strings with asterisks
+                globbing = glob(child.getText())
+                if globbing:
+                    self.command_list[-1].extend(globbing)
+                else:
+                    self.command_list[-1].append(child.getText())
+        self.visitChildren(ctx)
 
-    
-    def exitRedirection(self, ctx: Comp0010ShellParser.RedirectionContext):
-        # restore the redirection
-        
-        
-          
-    
-    #TODO: implement command substitution here. Use exitsubcmd if necessary
-    def enterSubcmd(self, ctx: Comp0010ShellParser.CommandContext):
-        pass
-    
-            
-    #TODO: implement pipe operator here. Use exitPipe if necessary
-    def enterPipe(self, ctx: Comp0010ShellParser.PipeContext):
-        pass
-      
-      
-      
+        # Identifying if there was a subcommand or a quote within
+        for i, s in enumerate(self.command_list[-1]):
+            if s == "CMD":
+                self.command_list[-1].pop(i)
+                for args in self.output.popleft()[::-1]:
+                    for subArgs in args.replace("\n", " ").rstrip().split(" ")[::-1]:
+                        self.command_list[-1].insert(i, subArgs)
+            elif s == "QUOTE":
+                self.command_list[-1][i] = ''.join(self.temporary_quote.pop()[1:-1])
+                
 
-    #HELPER METHODS
+        if ctx.getChildCount() > 1:
+            newArgs = []
+            for i in range(ctx.getChildCount()):
+                newArgs = [self.command_list[-1].pop()] + newArgs
+            self.command_list[-1].append("".join(newArgs))
 
-    def execute_commands(self, out):
+        # print(self.output)
+
+        
+                
+    def visitQuoted(self, ctx:Comp0010ShellParser.QuotedContext):
+        self.temporary_quote.append([])
+        for child in ctx.getChildren():
+            # Adding double quotes and single quotes ONLY
+            if child.__class__.__name__ != "BackquoteContext":
+                if child.getChild(0):
+                    for child2 in child.getChildren():
+                        # Creating a temporary placeholder
+                        if child2.__class__.__name__ == "BackquoteContext":
+                            self.temporary_quote[-1].append("CMD")
+                        else:
+                            self.temporary_quote[-1].append(child2.getText())
+            else:
+                self.temporary_quote.pop()
+
+        self.visitChildren(ctx)
+
+        # Identifying if there was a CMD within the quote
+        if len(self.temporary_quote) > 0:
+            for i, s in enumerate(self.temporary_quote[-1]):
+                if s == "CMD":
+                    self.temporary_quote[-1].pop(i)
+                    for args in self.output.popleft()[::-1]:
+                        for subArgs in args.replace("\n", " ").rstrip().split(" ")[::-1]:
+                            self.temporary_quote[-1].insert(i, subArgs)
+
+
+    def visitBackquote(self, ctx:Comp0010ShellParser.BackquoteContext):
+        self.visitChildren(ctx)
+        if ctx.getChild(1).getChildCount() == 3:
+            if ctx.getChild(1).getChild(1).getText() == ";":
+                count = 1
+                node = ctx.getChild(1).getChild(0)
+                while node.getChildCount() == 3 and node.getChild(1).getText() == ";":
+                    count += 1
+                    node = node.getChild(0)
+                newOut = []
+                for i in range(count + 1):
+                    newOut = self.output.pop() + newOut
+        
+                self.output.append(newOut)
+
+                
+
+    def execute_commands(self, commands, out):
         # Execute the commands in the order of traversal
         command_executor = CommandExecutor()
-        for app, args in self.command_list:
-            if app in command_executor.command_map:
-                command_executor.command_map[app].execute(args, out)
-            else:
-                raise ValueError(f"Unsupported application {app}") 
+        app = commands[0]
+        args = commands[1:]
+
+        # # Adding arguments from previous call in pipe to current call
+        # args.extend(pipeArgs)
+
+        if app in command_executor.command_map:
+            command_executor.command_map[app].execute(args, out)
+        else:
+            raise ValueError(f"Unsupported application {app}") 
+
+    
+
         
 
 def parse(cmdline, out):
@@ -120,13 +233,16 @@ def parse(cmdline, out):
     lexer = Comp0010ShellLexer(input_stream)
     stream = CommonTokenStream(lexer)
     parser = Comp0010ShellParser(stream)
+
+    # Building tree
     tree = parser.command()
-    # print_parse_tree(tree)
     
+    # Working through tree
     visitor = Visitor()
-    walker = ParseTreeWalker()
-    walker.walk(visitor, tree)
-    visitor.execute_commands(out)
+    visitor.visit(tree)
+
+    for i in visitor.output:
+        out.extend(i)
     
 def print_parse_tree(node, indent=""):
     if hasattr(node, 'children'):
@@ -157,3 +273,6 @@ if __name__ == "__main__":
         parse(cmdline, out)
         while len(out) > 0:
             print(out.popleft(), end="")
+
+    if os.path.isfile(".temporary.txt"):
+            os.remove(".temporary.txt")

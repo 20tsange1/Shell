@@ -1,50 +1,18 @@
 grammar Comp0010Shell;
 
-//parser
+command: pipe | command ';' command | call;
+pipe: call '|' call | pipe '|' command;
 
-call: NON_KEYWORD 
-   | redirection? function redirection? argument* redirection?
-   ;
 
-quoted: SINGLE_QUOTED 
-   | DOUBLE_QUOTED 
-   | subcmd
-   ;
-
+call: WHITESPACE? (redirection WHITESPACE?)* argument (WHITESPACE? atom)* WHITESPACE?;
+atom: redirection | argument;
 argument: (quoted | UNQUOTED)+;
-
-redirection: (LEFT_ARROW (UNQUOTED|quoted)) 
-   | (RIGHT_ARROW (UNQUOTED|quoted))
-   ;
-
-function: UNQUOTED;
-
-pipe: call PIPE call 
-   | pipe PIPE command
-   ;
-
-subcmd: BACKQUOTE call BACKQUOTE;
-
-command: command SEMICOL command
-   | pipe 
-   | call
-   ;
-
-// lexer 
-
-LEFT_ARROW: '<';
-RIGHT_ARROW: '>';
-PIPE: '|';
-SEMICOL: ';';
-BACKQUOTE: '`';
-DOUBLEQUOTE: '"';
+redirection: '<' WHITESPACE? argument | '>' WHITESPACE? argument;
 
 
-UNQUOTED: ~[;'\n"`|<> ]+;
-
-//needed to remove all whitespace from command
-WHITESPACE: [ \t]+ -> skip;
-
-SINGLE_QUOTED: '\'' (~[\n']+)? '\'';
-DOUBLE_QUOTED: '"' (~[\n"]+)? '"';
-NON_KEYWORD: ~[\r\n'"`|;];
+UNQUOTED: ~[ \t\n'"`|;<>]+;
+quoted: singlequote | backquote | doublequote;
+singlequote: '\''(UNQUOTED | WHITESPACE | singlequote | backquote)*'\'';
+backquote: '`'command?'`';
+doublequote: '"'(UNQUOTED | WHITESPACE | doublequote | backquote)*'"';
+WHITESPACE: [ \t]+;
