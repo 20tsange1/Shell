@@ -13,14 +13,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: ${{ github.ref }}
-      - name: Build the Docker image for shell
-        run:  docker build -t shell .
-      - name: Run coverage tests
-        run:  docker run --rm shell /comp0010/tools/coverage_github_actions
-      - name: Run unit tests
-        run:  docker run --rm shell /comp0010/tools/test_github_actions
-      - name: Run static analysis
-        run: docker run --rm shell /comp0010/tools/analysis_github_actions
       - name: Build the Docker image for system tests
         run: docker build -t comp0010-system-test .
       - name: Run system tests

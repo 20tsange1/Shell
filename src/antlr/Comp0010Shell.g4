@@ -11,8 +11,25 @@ redirection: '<' WHITESPACE? argument | '>' WHITESPACE? argument;
 
 
 UNQUOTED: ~[ \t\n'"`|;<>]+;
+
 quoted: singlequote | backquote | doublequote;
-singlequote: '\''(UNQUOTED | WHITESPACE | singlequote | backquote)*'\'';
-backquote: '`'command?'`';
-doublequote: '"'(UNQUOTED | WHITESPACE | doublequote | backquote)*'"';
+singlequote: '\''(UNQUOTED | WHITESPACE | backquote | '"' |'`' | '|' | ';' | '<' | '>' | '\n')*'\'';
+backquote: '`'bcommand?'`';
+doublequote: '"'(UNQUOTED | WHITESPACE | backquote | '\'' |'`' | '|' | ';' | '<' | '>' | '\n')*'"';
+
+
+bcommand: bpipe | bcommand ';' bcommand | bcall;
+bpipe: bcall '|' bcall | bpipe '|' bcommand;
+
+
+bcall: WHITESPACE? (bredirection WHITESPACE?)* bargument (WHITESPACE? batom)* WHITESPACE?;
+batom: bredirection | bargument;
+bargument: (bquoted | UNQUOTED)+;
+bredirection: '<' WHITESPACE? bargument | '>' WHITESPACE? bargument;
+
+
+bquoted: bsinglequote | bdoublequote;
+bsinglequote: '\''(UNQUOTED | WHITESPACE)*'\'';
+bdoublequote: '"'(UNQUOTED | WHITESPACE)*'"';
+
 WHITESPACE: [ \t]+;

@@ -6,10 +6,16 @@ from os import listdir
 from collections import deque
 from glob import glob
 
-
 class Command:
     def execute(self, args, out):
         pass
+
+    def stdinCheck(self):
+        lines = sys.stdin.readlines()
+        if lines:
+            return lines
+        else:
+            raise ValueError("No standard input detected")
 
 
 class PwdCommand(Command):
@@ -26,7 +32,10 @@ class CdCommand(Command):
 
 class EchoCommand(Command):
     def execute(self, args, out):
-        out.append(" ".join(args) + "\n")
+        if len(args) > 0:
+            out.append(" ".join(args) + "\n")
+        else:
+            out.extend(self.stdinCheck())
 
 
 class LsCommand(Command):
@@ -45,14 +54,14 @@ class LsCommand(Command):
 class CatCommand(Command):
     def execute(self, args, out):
         if len(args) == 0:
-            out.extend(sys.stdin.readlines())
+            out.extend(self.stdinCheck())
         else:
             for a in args:
-                with open(a) as f:
+                with open(a.rstrip()) as f:
                     # out.append(f.read())
                     out.extend(f.readlines())
-            if (len(out) > 0 and out[-1][-1] != '\n'):
-                  out[-1] += '\n'   
+            if len(out) > 0 and out[-1][-1] != "\n":
+                out[-1] += "\n"
 
 
 class HeadCommand(Command):
@@ -63,7 +72,6 @@ class HeadCommand(Command):
 
         if len(args) == 0:
             num_lines = 10
-            
 
         elif len(args) == 1:
             num_lines = 10
@@ -74,21 +82,23 @@ class HeadCommand(Command):
                 raise ValueError("Wrong flags")
             else:
                 num_lines = int(args[1])
-        
+                
         elif len(args) == 3:
             if args[0] != "-n":
                 raise ValueError("Wrong flags")
             else:
                 num_lines = int(args[1])
                 file = args[2]
-        
+
+                
         if file:
             with open(file) as f:
                 lines = f.readlines()
                 for i in range(0, min(len(lines), num_lines)):
                     out.append(lines[i])
         else:
-            lines = sys.stdin.readlines()
+            lines = self.stdinCheck()
+
             for i in range(0, min(len(lines), num_lines)):
                 out.append(lines[i])
 
@@ -106,7 +116,8 @@ class TailCommand(Command):
         elif len(args) == 1:
             num_lines = 10
             file = args[0]
-        
+
+            
         elif len(args) == 2:
             if args[0] != "-n":
                 raise ValueError("Wrong flags")
@@ -119,7 +130,8 @@ class TailCommand(Command):
             else:
                 num_lines = int(args[1])
                 file = args[2]
-        
+
+                
         if file:
             with open(file) as f:
                 lines = f.readlines()
@@ -127,7 +139,8 @@ class TailCommand(Command):
                 for i in range(0, display_length):
                     out.append(lines[len(lines) - display_length + i])
         else:
-            lines = sys.stdin.readlines()
+            lines = self.stdinCheck()
+  
             display_length = min(len(lines), num_lines)
             for i in range(0, display_length):
                 out.append(lines[len(lines) - display_length + i])
@@ -135,19 +148,30 @@ class TailCommand(Command):
 
 class GrepCommand(Command):
     def execute(self, args, out):
-        if len(args) < 2:
+        if len(args) < 1:
             raise ValueError("Wrong number of command line arguments")
-        pattern = args[0]
-        files = args[1:]
-        for file in files:
-            with open(file) as f:
-                lines = f.readlines()
-                for line in lines:
-                    if re.match(pattern, line):
-                        if len(files) > 1:
-                            out.append(f"{file}:{line}")
-                        else:
-                            out.append(line)
+        
+        if len(args) == 1:
+            pattern = args[0]
+            lines = self.stdinCheck()
+            for line in lines:
+                if re.match(pattern, line):
+                    out.append(line)
+        
+        else:
+            pattern = args[0]
+            files = args[1:]
+            for file in files:
+                if not os.path.isfile(file):
+                    raise ValueError("Invalid File Opened")
+                with open(file) as f:
+                    lines = f.readlines()
+                    for line in lines:
+                        if re.match(pattern, line):
+                            if len(files) > 1:
+                                out.append(f"{file}:{line}")
+                            else:
+                                out.append(line)
 
 
 class SortCommand(Command):
@@ -155,24 +179,24 @@ class SortCommand(Command):
         reverse = False
         filename = None
 
-        if (len(args) > 2):
+        if len(args) > 2:
             raise ValueError("Wrong number of command line arguments")
 
         for arg in args:
-            if arg == '-r':
+            if arg == "-r":
                 reverse = True
             else:
                 filename = arg
 
         if filename:
-            with open(filename, 'r') as file:
+            with open(filename, "r") as file:
                 lines = file.readlines()
-                if (len(lines) > 0 and lines[-1][-1] != '\n'):
-                    lines[-1] += '\n'
+                if len(lines) > 0 and lines[-1][-1] != "\n":
+                    lines[-1] += "\n"
 
         else:
             # if no filename, read from stdin
-            lines = sys.stdin.readlines()
+            lines = self.stdinCheck()
 
         sorted_lines = sorted(lines, reverse=reverse)
 
@@ -180,36 +204,77 @@ class SortCommand(Command):
 
 
 class CutCommand(Command):
+    def defineRanges(self, byte_ranges):
+        byte_ranges = byte_ranges.split(",")
+        byte_ranges.sort(key=lambda a : a[0])
+
+        for i, j in enumerate(byte_ranges):
+            byte_ranges[i] = j.split("-")
+            if len(byte_ranges[i]) == 1:
+                byte_ranges[i].append(byte_ranges[i][0])
+
+        byte_ranges_interval = []
+
+        start, end = None, None
+
+        for rng in byte_ranges:
+            if start is None and end is None:
+                start, end = rng
+            
+            
+            elif rng[0] <= end and rng[1] == '':
+                byte_ranges_interval.append([start, None])
+                break
+            elif rng[1] == '':
+                byte_ranges_interval.append([start, end])
+                start, end = rng
+                break
+            elif rng[0] <= end and rng[1] > end:
+                end = rng[1]
+            elif rng[0] > end:
+                byte_ranges_interval.append([start, end])
+                start, end = rng
+            else:
+                continue
+
+        if len(byte_ranges_interval) == 0:
+                byte_ranges_interval.append([start, end])
+        elif start != None:
+            if byte_ranges_interval[-1][1] != None and byte_ranges_interval[-1][1] != '':
+                byte_ranges_interval.append([start, end])
+
+        # print(byte_ranges_interval)
+
+        return byte_ranges_interval
+
+
     def execute(self, args, out):
         if len(args) == 0 or len(args) > 3:
             raise ValueError("Wrong number of command line arguments")
 
         if args[0] != "-b":
             raise ValueError("Wrong flag")
-        
-        bytes_range = args[1]    
+
+        bytes_range = args[1]
         if len(args) == 2:
-            lines = sys.stdin.readlines()
+            lines = self.stdinCheck()
         else:
-            with open(args[2], 'r') as file:
+            with open(args[2], "r") as file:
                 lines = file.readlines()
 
-        byte_ranges = bytes_range.split(',')
+        byte_ranges_interval = self.defineRanges(bytes_range)
+
         for line in lines:
             line_output = []
             line = line.strip()
-            for byte_range in byte_ranges:
-                if '-' in byte_range:
-                    start, end = byte_range.split('-')
-                    start = int(start) - 1 if start else None
-                    end = int(end) if end else None
-                    line_output.append(line[start:end])
-                else:
-                    pos = int(byte_range)
-                    line_output.append(line[pos - 1])
-            
+            for byte_range in byte_ranges_interval:
+                start, end = byte_range
+                start = int(start) - 1 if start else None
+                end = int(end) if end else None
+                line_output.append(line[start:end])
+
             out.extend(line_output)
-            out.append('\n')
+            out.append("\n")
 
 
 class FindCommand(Command):
@@ -220,15 +285,34 @@ class FindCommand(Command):
             if flag:
                 for f in listdir(dire):
                     if not f.startswith("."):
-                        self.find(os.path.join(dire, f), os.path.join(prev, f), item, found, True)
+                        self.find(
+                            os.path.join(dire, f),
+                            os.path.join(prev, f),
+                            item,
+                            found,
+                            True,
+                        )
                         found.append(prev + "/" + f + "\n")
             else:
                 for f in listdir(dire):
-                    if fnmatch.fnmatch(f, item):
-                        self.find(os.path.join(dire, f), os.path.join(prev, f), item, found, True)
-                        found.append(prev + "/" + f + "\n")
-                    else:
-                        self.find(os.path.join(dire, f), os.path.join(prev, f), item, found, False)
+                    if not f.startswith("."):
+                        if fnmatch.fnmatch(f, item):
+                            self.find(
+                                os.path.join(dire, f),
+                                os.path.join(prev, f),
+                                item,
+                                found,
+                                True,
+                            )
+                            found.append(prev + "/" + f + "\n")
+                        else:
+                            self.find(
+                                os.path.join(dire, f),
+                                os.path.join(prev, f),
+                                item,
+                                found,
+                                False,
+                            )
 
     def execute(self, args, out):
         if len(args) == 0 or len(args) > 3:
@@ -244,13 +328,20 @@ class FindCommand(Command):
             elif len(args) == 3 and args[1] == "-name":
                 ls_dir = os.getcwd()
                 if os.path.isdir(ls_dir):
-                    self.find(os.path.join(ls_dir, args[0]), os.path.join(args[0]), args[2], out, False)
+                    self.find(
+                        os.path.join(ls_dir, args[0]),
+                        os.path.join(args[0]),
+                        args[2],
+                        out,
+                        False,
+                    )
                     os.chdir(ls_dir)
                 else:
                     raise ValueError("Invalid Directory Name")
             else:
                 raise ValueError("Wrong Flags")
-        
+
+                
 
 class UniqCommand(Command):
     def return_uniq(self, lines, ignore_case):
@@ -265,30 +356,29 @@ class UniqCommand(Command):
         return return_text
 
     def unique_file(self, file_name, ignore_case):
-        with open(file_name, 'r') as file:
+        with open(file_name, "r") as file:
             lines = [""] + file.readlines()
         return self.return_uniq(lines, ignore_case)
 
     # def unique_stdin(self, ignore_case, args):
     def unique_stdin(self, ignore_case):
-        lines = [""] + sys.stdin.readlines()
+        lines = [""] + self.stdinCheck()
         return self.return_uniq(lines, ignore_case)
 
     def execute(self, args, out):
         if len(args) == 0:
             out.extend(self.unique_stdin(False))
         elif len(args) == 1:
-            if args[0] == '-i':
+            if args[0] == "-i":
                 out.extend(self.unique_stdin(True))
             elif os.path.isfile(args[0]):
                 out.extend(self.unique_file(args[0], False))
             else:
                 raise ValueError("Wrong flags or invalid file")
         elif len(args) == 2:
-            if args[0] == '-i' and os.path.isfile(args[1]):
+            if args[0] == "-i" and os.path.isfile(args[1]):
                 out.extend(self.unique_file(args[1], True))
-            elif args[0] != '-i':
+            elif args[0] != "-i":
                 raise ValueError("Wrong flags")
         else:
             raise ValueError("Wrong number of command line arguments")
-            

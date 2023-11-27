@@ -59,5 +59,50 @@ class Comp0010ShellVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by Comp0010ShellParser#bcommand.
+    def visitBcommand(self, ctx:Comp0010ShellParser.BcommandContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by Comp0010ShellParser#bpipe.
+    def visitBpipe(self, ctx:Comp0010ShellParser.BpipeContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by Comp0010ShellParser#bcall.
+    def visitBcall(self, ctx:Comp0010ShellParser.BcallContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by Comp0010ShellParser#batom.
+    def visitBatom(self, ctx:Comp0010ShellParser.BatomContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by Comp0010ShellParser#bargument.
+    def visitBargument(self, ctx:Comp0010ShellParser.BargumentContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by Comp0010ShellParser#bredirection.
+    def visitBredirection(self, ctx:Comp0010ShellParser.BredirectionContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by Comp0010ShellParser#bquoted.
+    def visitBquoted(self, ctx:Comp0010ShellParser.BquotedContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by Comp0010ShellParser#bsinglequote.
+    def visitBsinglequote(self, ctx:Comp0010ShellParser.BsinglequoteContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by Comp0010ShellParser#bdoublequote.
+    def visitBdoublequote(self, ctx:Comp0010ShellParser.BdoublequoteContext):
+        return self.visitChildren(ctx)
+
+
 
 del Comp0010ShellParser
