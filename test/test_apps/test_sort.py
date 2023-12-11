@@ -7,6 +7,7 @@ import io
 from apps.sort import Sort
 from error import ArgumentError, FileError, FlagError
 from hypothesis import given, strategies as st
+from unittest.mock import patch
 
 
 class TestSort(unittest.TestCase):
@@ -112,22 +113,18 @@ class TestSort(unittest.TestCase):
         self.teardown()
 
     def test_sort_stdin(self):
-        out = self.setup([])
-        sys.stdin = io.StringIO(
-            "GGG\nBBB\nCCC\nDDD\nJJJ\nFFF\nEEE\nHHH\nAAA\nIII\n"
-        )
-        Sort().execute([], out)
+        out = self.setup(["GGG\nBBB\nCCC\nDDD\nJJJ\nFFF\nEEE\nHHH\nAAA\nIII\n"])
+        with patch("sys.stdin", open(self.test_file[0])):
+            Sort().execute([], out)
         self.assertEqual(
             "".join(out), "AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"
         )
         self.teardown()
 
     def test_sort_stdin_reverse(self):
-        out = self.setup([])
-        sys.stdin = io.StringIO(
-            "GGG\nBBB\nCCC\nDDD\nJJJ\nFFF\nEEE\nHHH\nAAA\nIII\n"
-        )
-        Sort().execute(["-r"], out)
+        out = self.setup(["GGG\nBBB\nCCC\nDDD\nJJJ\nFFF\nEEE\nHHH\nAAA\nIII\n"])
+        with patch("sys.stdin", open(self.test_file[0])):
+            Sort().execute(["-r"], out)
         self.assertEqual(
             "".join(out), "JJJ\nIII\nHHH\nGGG\nFFF\nEEE\nDDD\nCCC\nBBB\nAAA\n"
         )
@@ -161,7 +158,7 @@ class TestSort(unittest.TestCase):
     def test_sort_hypothesis(self, contents):
         out = self.setup(["\n".join(contents) + "\n"])
         Sort().execute([self.test_file[0]], out)
-        assert len(out) == len(contents)
+        self.assertEqual(len(out), len(contents))
         self.teardown()
 
     # Testing if the output is sorted
@@ -179,5 +176,5 @@ class TestSort(unittest.TestCase):
     def test_sort_hypothesis_sorted(self, contents):
         out = self.setup(["\n".join(contents) + "\n"])
         Sort().execute([self.test_file[0]], out)
-        assert "".join(out) == "\n".join(sorted(contents)) + "\n"
+        self.assertEqual("".join(out), "\n".join(sorted(contents)) + "\n")
         self.teardown()

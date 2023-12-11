@@ -32,13 +32,13 @@ class TestVisitor(unittest.TestCase):
 
     def test_redirection_stdin(self):
         out = self.setup(["ABCDEFFEDCBA\nABCDDCBA\n"])
-        parse("echo < " + self.test_file[0], out)
+        parse("cat < " + self.test_file[0], out)
         self.assertEqual("ABCDEFFEDCBA\nABCDDCBA\n", "".join(out))
         self.teardown()
 
     def test_redirection_stdin_space(self):
         out = self.setup(["ABCDEFFEDCBA\nABCDDCBA\n"])
-        parse("echo <" + self.test_file[0], out)
+        parse("cat <" + self.test_file[0], out)
         self.assertEqual("ABCDEFFEDCBA\nABCDDCBA\n", "".join(out))
         self.teardown()
 

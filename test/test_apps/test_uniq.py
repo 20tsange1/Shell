@@ -6,6 +6,7 @@ import io
 from apps.uniq import Uniq
 from error import ArgumentError, FlagError, FileError
 from hypothesis import given, strategies as st
+from unittest.mock import patch
 
 
 class TestUniq(unittest.TestCase):
@@ -97,23 +98,23 @@ class TestUniq(unittest.TestCase):
         self.teardown()
 
     def test_uniq_stdin(self):
-        out = self.setup([])
-        sys.stdin = io.StringIO("AAA\nAAA\nBBB\nBBB\nCCC\nCCC\n")
-        Uniq().execute([], out)
+        out = self.setup(["AAA\nAAA\nBBB\nBBB\nCCC\nCCC\n"])
+        with patch("sys.stdin", open(self.test_file[0])):
+            Uniq().execute([], out)
         self.assertEqual("".join(out), "AAA\nBBB\nCCC\n")
         self.teardown()
 
     def test_uniq_2_stdin(self):
-        out = self.setup([])
-        sys.stdin = io.StringIO("AAA\naaa\nBBB\nbbb\nCCC\nccc\n")
-        Uniq().execute([], out)
+        out = self.setup(["AAA\naaa\nBBB\nbbb\nCCC\nccc\n"])
+        with patch("sys.stdin", open(self.test_file[0])):
+            Uniq().execute([], out)
         self.assertEqual("".join(out), "AAA\naaa\nBBB\nbbb\nCCC\nccc\n")
         self.teardown()
 
     def test_uniq_lowercase_stdin(self):
-        out = self.setup([])
-        sys.stdin = io.StringIO("AAA\naaa\nBBB\nbbb\nCCC\nccc\n")
-        Uniq().execute(["-i"], out)
+        out = self.setup(["AAA\naaa\nBBB\nbbb\nCCC\nccc\n"])
+        with patch("sys.stdin", open(self.test_file[0])):
+            Uniq().execute(["-i"], out)
         self.assertEqual("".join(out), "AAA\nBBB\nCCC\n")
         self.teardown()
 
@@ -123,7 +124,7 @@ class TestUniq(unittest.TestCase):
     def test_uniq_hypothesis(self, contents):
         out = self.setup(["\n".join(contents) + "\n"])
         Uniq().execute(["-i", self.test_file[0]], out)
-        assert len(out) <= len(contents)
+        self.assertLessEqual(len(out), len(contents))
         self.teardown()
 
     # out must be shorter than elements with flag
@@ -131,5 +132,5 @@ class TestUniq(unittest.TestCase):
     def test_uniq_hypothesis_ignore(self, contents):
         out = self.setup(["\n".join(contents) + "\n"])
         Uniq().execute([self.test_file[0]], out)
-        assert len(out) <= len(contents)
+        self.assertLessEqual(len(out), len(contents))
         self.teardown()

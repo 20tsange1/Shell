@@ -112,5 +112,5 @@ class TestTail(unittest.TestCase):
     def test_hypothesis_length(self, contents, n):
         out = self.setup(["\n".join(contents) + "\n"])
         Tail().execute(["-n", f"{n}", self.test_file[0]], out)
-        assert len(out) <= n
+        self.assertLessEqual(len(out), n)
         self.teardown()

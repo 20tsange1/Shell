@@ -23,6 +23,12 @@ class TestFont(unittest.TestCase):
             Font().execute(["boldunderline"], out)
         self.teardown()
 
+    def test_font_no_args(self):
+        out = self.setup()
+        with self.assertRaises(ArgumentError):
+            Font().execute([], out)
+        self.teardown()
+
     def test_font_too_many_args(self):
         out = self.setup()
         with self.assertRaises(ArgumentError):

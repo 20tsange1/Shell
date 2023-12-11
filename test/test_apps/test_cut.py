@@ -7,6 +7,7 @@ from apps.cut import Cut
 from parameterized import parameterized
 from error import ArgumentError, FlagError, FileError
 from hypothesis import given, strategies as st
+from unittest.mock import patch
 
 
 class TestCut(unittest.TestCase):
@@ -71,9 +72,9 @@ class TestCut(unittest.TestCase):
         self.teardown()
 
     def test_cut_stdin(self):
-        out = self.setup([])
-        sys.stdin = io.StringIO("ABCDEF\nBCDEFGHIJK\nABCDEF\n")
-        Cut().execute(["-b", "1-3,3-"], out)
+        out = self.setup(["ABCDEF\nBCDEFGHIJK\nABCDEF\n"])
+        with patch("sys.stdin", open(self.test_file[0])):
+            Cut().execute(["-b", "1-3,3-"], out)
         self.assertEqual("".join(out), "ABCDEF\nBCDEFGHIJK\nABCDEF\n")
         self.teardown()
 
@@ -103,9 +104,10 @@ class TestCut(unittest.TestCase):
         Cut().execute(
             ["-b", f"{check_start}-{check_end}", self.test_file[0]], out
         )
-        assert len(out[0][:-1]) <= min(
+        self.assertLessEqual(len(out[0][:-1]), 
+        min(
             (check_end - check_start) + 1, len(text)
-        )
+        ))
         self.teardown()
 
     # Subset Property testing
@@ -126,7 +128,7 @@ class TestCut(unittest.TestCase):
         Cut().execute(
             ["-b", f"{check_start}-{check_end}", self.test_file[0]], out
         )
-        assert set(out[0][:-1]).issubset(set(text))
+        self.assertTrue(set(out[0][:-1]).issubset(set(text)))
         self.teardown()
 
     # Order Preservation
@@ -143,5 +145,5 @@ class TestCut(unittest.TestCase):
         Cut().execute(
             ["-b", ",".join([str(i) for i in ranges]), self.test_file[0]], out
         )
-        assert "".join(sorted(out[0][:-1])) == out[0][:-1]
+        self.assertEqual("".join(sorted(out[0][:-1])), out[0][:-1])
         self.teardown()

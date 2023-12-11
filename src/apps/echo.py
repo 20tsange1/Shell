@@ -11,9 +11,9 @@ class Echo(Application):
             args (List[str]): Arguments to be repeated by function
             out (List[str]): Output for stdout
         """
-        if len(args) > 0:
-            out.append(" ".join(args) + "\n")
+        # if len(args) >= 0:
+        out.append(" ".join(args) + "\n")
         # else:
         #     raise ValueError("Wrong number of command line arguments")
-        else:
-            out.extend(self.stdin_check())
+        # else:
+        #     out.extend(self.stdin_check())

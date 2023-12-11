@@ -1,8 +1,6 @@
 grammar Comp0010Shell;
 
-command: pipe | command ';' command | call;
-pipe: pipe '|' call | call '|' call | pipe '|' command;
-call: WHITESPACE? (redirection WHITESPACE)* argument (WHITESPACE? atom)* WHITESPACE?;
+command: pipe | command ';' command | call | <EOF>;
 pipe: pipe '|' call | call '|' call | pipe '|' command;
 call: WHITESPACE? (redirection WHITESPACE)* argument (WHITESPACE? atom)* WHITESPACE?;
 atom: redirection | argument;

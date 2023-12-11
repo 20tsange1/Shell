@@ -17,11 +17,22 @@ class TestColor(unittest.TestCase):
         self.assertEqual("".join(out), "\033[31m")
         self.teardown()
 
+    def test_color_two_words(self):
+        out = self.setup()
+        Color().execute(["light red"], out)
+        self.assertEqual("".join(out), "\033[91m")
+        self.teardown()
+
     def test_color_invalid(self):
         out = self.setup()
         with self.assertRaises(FlagError):
             Color().execute(["darkgrey"], out)
         self.teardown()
+
+    def test_color_no_args(self):
+        out = self.setup()
+        with self.assertRaises(ArgumentError):
+            Color().execute([], out)
 
     def test_color_too_many_args(self):
         out = self.setup()

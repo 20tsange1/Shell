@@ -2,22 +2,12 @@ import tempfile
 import unittest
 from pathlib import Path
 from apps.echo import Echo
-from unittest.mock import patch
+# from unittest.mock import patch
 from hypothesis import given, strategies as st
 
 
 class TestEcho(unittest.TestCase):
     def setup(self):
-        return []
-      
-    def setup_with_files(self, contents):
-        self.test_dir = tempfile.TemporaryDirectory()
-        self.temp_path = Path(self.test_dir.name)
-        self.test_file = []
-        for i in range(len(contents)):
-            self.test_file.append(str(self.temp_path) + f"/test-{i}.txt")
-            with open(self.test_file[i], "w") as f:
-                f.write(contents[i])
         return []
 
     def test_echo(self):
@@ -67,16 +57,10 @@ class TestEcho(unittest.TestCase):
         Echo().execute(["Hello\tWorld"], out)
         self.assertEqual("".join(out), "Hello\tWorld\n")
 
-    def test_echo_stdin(self):
-        out = self.setup_with_files(["Hello World"])
-        with patch("sys.stdin", open(self.test_file[0])):
-            Echo().execute([], out)
-        self.assertEqual("".join(out), "Hello World")
-
     # Hypothesis Testing
     # Checking if the output has a whitespace for each argument
     @given(st.lists(st.text(min_size=1), min_size=1))
     def test_echo_hypothesis(self, args):
         out = self.setup()
         Echo().execute(args, out)
-        assert len(out[0]) == len("".join(args)) + len(args)
+        self.assertEqual(len(out[0]), len("".join(args)) + len(args))
