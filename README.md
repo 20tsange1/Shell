@@ -295,7 +295,7 @@ Counts the number of lines, words, and characters in a file/stdin.
 In COMP0010 Shell, each application has an unsafe variant. An unsafe version of an application is an application that has the same semantics as the original application, but instead of raising exceptions, it prints the error message to its stdout. This feature can be used to prevent long sequences from terminating early when some intermediate commands fail. The names of unsafe applications are prefixed with `_`, e.g. `_ls` and `_grep`.
 
 ## UML Diagram
-![](https://github.com/comp0010/comp0010-shell-python-p3/blob/final/UML_Diagram_Shell.png)
+![](https://github.com/comp0010/comp0010-shell-python-p3/blob/master/UML_Diagram_Shell.png)
 
 ## Testing
 Our version of the COMP0010 Shell has both unit and property-based testing mechanisms. Test cases were made for all scenarios in all files that were written by us, where appropriate. This includes all of the applications, as well as the Visitor, the Unsafe decorator, and the Shell itself.
