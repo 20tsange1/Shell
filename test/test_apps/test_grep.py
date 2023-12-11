@@ -1,9 +1,9 @@
+import os
 import tempfile
 import unittest
 from pathlib import Path
 from apps.grep import Grep
 from unittest.mock import patch
-import os
 from error import ArgumentError, FileError
 
 

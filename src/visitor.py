@@ -96,7 +96,7 @@ class Visitor(ParseTreeVisitor):
             for i in globbing:
                 globbed = glob(argument[i])
                 if globbed:
-                    argument = argument[:i] + globbed + argument[i + 1 :]
+                    argument = argument[:i] + globbed + argument[i+1:]
                 else:
                     raise ArgumentError(f"No matches found - {argument[i]}")
 

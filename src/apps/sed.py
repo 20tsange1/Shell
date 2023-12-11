@@ -21,9 +21,14 @@ class Sed(Application):
             raise ArgumentError("Wrong number of command line arguments")
         if len(args) == 1:
             # read from stdin
-            process, pattern, replacement_string, flags = re.split(
-                r"[/|]", args[0]
-            )
+            try:
+                process, pattern, replacement_string, flags = re.split(
+                    r"[/|]", args[0]
+                )
+            except Exception:
+                raise ArgumentError(
+                    f"""Invalid regular expression pattern {args[0]}"""
+                )
             lines = self.stdin_check()
             for line in lines:
                 # handle regex substitution here
@@ -38,9 +43,14 @@ class Sed(Application):
                 out[-1] += "\n"
         else:
             arg2, file_path = args
-            process, pattern, replacement_string, flags = re.split(
-                r"[/|]", arg2
-            )
+            try:
+                process, pattern, replacement_string, flags = re.split(
+                    r"[/|]", arg2
+                )
+            except Exception:
+                raise ArgumentError(
+                    f"""Invalid regular expression pattern {arg2}"""
+                )
             if not os.path.exists(file_path):
                 raise FileError(f"File '{file_path}' does not exist")
             with open(file_path, "r") as f:

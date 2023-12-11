@@ -9,10 +9,7 @@ from hypothesis import given, strategies as st
 class TestEcho(unittest.TestCase):
     def setup(self):
         return []
-
-    def teardown(self):
-        self.test_dir.cleanup()
-
+      
     def setup_with_files(self, contents):
         self.test_dir = tempfile.TemporaryDirectory()
         self.temp_path = Path(self.test_dir.name)
@@ -75,10 +72,9 @@ class TestEcho(unittest.TestCase):
         with patch("sys.stdin", open(self.test_file[0])):
             Echo().execute([], out)
         self.assertEqual("".join(out), "Hello World")
-        self.teardown()
 
     # Hypothesis Testing
-    # Checking if the output is twice as long as the input
+    # Checking if the output has a whitespace for each argument
     @given(st.lists(st.text(min_size=1), min_size=1))
     def test_echo_hypothesis(self, args):
         out = self.setup()

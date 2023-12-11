@@ -15,42 +15,38 @@ class Cut(Application):
             (List[str]): Returns list of ranges
         """
         byte_ranges = byte_ranges.split(",")
-        byte_ranges.sort(key=lambda a: a[0])
 
         for i, j in enumerate(byte_ranges):
             byte_ranges[i] = j.split("-")
             if len(byte_ranges[i]) == 1:
                 byte_ranges[i].append(byte_ranges[i][0])
+            elif byte_ranges[i][0] == "":
+                byte_ranges[i][0] = "1"
+
+        byte_ranges.sort(key=lambda a: int(a[0]))
 
         intervals = []
 
-        start, end = None, None
+        start, end = "0", "0"
 
         for rng in byte_ranges:
-            if start is None and end is None:
-                start, end = rng
-            elif rng[0] <= end and rng[1] == "":
+            if int(rng[0]) <= int(end) and rng[1] == "":
                 intervals.append([start, ""])
                 break
             elif rng[1] == "":
                 intervals.append([start, end])
                 start, end = rng
                 break
-            elif rng[0] <= end and rng[1] > end:
+            elif int(rng[0]) <= int(end) and int(rng[1]) > int(end):
                 end = rng[1]
-            elif rng[0] > end:
+            elif int(rng[0]) > int(end):
                 intervals.append([start, end])
                 start, end = rng
-            # else:
-            #     continue
 
-        if len(intervals) == 0:
+        if intervals[-1][1] != "":
             intervals.append([start, end])
-        else:
-            if intervals[-1][1] != "":
-                intervals.append([start, end])
 
-        return intervals
+        return intervals[1:]
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """

@@ -149,7 +149,12 @@ class TestSort(unittest.TestCase):
     # Equal length property testing
     @given(
         st.lists(
-            st.text(min_size=1, alphabet="abcdefghijklmnopqrstuvwxyz"),
+            st.text(
+                min_size=1,
+                alphabet=st.characters(
+                    whitelist_categories=("Ll", "Lu", "Nd"),
+                ),
+            ),
             min_size=1,
         ),
     )
@@ -157,3 +162,22 @@ class TestSort(unittest.TestCase):
         out = self.setup(["\n".join(contents) + "\n"])
         Sort().execute([self.test_file[0]], out)
         assert len(out) == len(contents)
+        self.teardown()
+
+    # Testing if the output is sorted
+    @given(
+        st.lists(
+            st.text(
+                min_size=1,
+                alphabet=st.characters(
+                    whitelist_categories=("Ll", "Lu", "Nd"),
+                ),
+            ),
+            min_size=1,
+        ),
+    )
+    def test_sort_hypothesis_sorted(self, contents):
+        out = self.setup(["\n".join(contents) + "\n"])
+        Sort().execute([self.test_file[0]], out)
+        assert "".join(out) == "\n".join(sorted(contents)) + "\n"
+        self.teardown()

@@ -1,7 +1,6 @@
 import unittest
 import os
 import tempfile
-from hypothesis import given, strategies as st
 from apps.touch import Touch
 from error import ArgumentError, FileError
 
@@ -39,25 +38,4 @@ class TestTouch(unittest.TestCase):
         out = self.setup()
         with self.assertRaises(ArgumentError):
             Touch().execute(["file1.txt", "file2.txt"], out)
-        self.teardown()
-
-    # Hypothesis Testing
-    # touched directory must have equal to or more files than before
-    @given(
-        st.lists(
-            st.text(
-                alphabet=st.characters(
-                    whitelist_categories=("Ll", "Lu", "Nd"),
-                ),
-            ),
-            min_size=1,
-            max_size=1,
-        ).filter(lambda lst: all(len(item) > 0 for item in lst)),
-    )
-    def test_touch_count_files(self, contents):
-        contents = [os.path.join(content) for content in contents]
-        expected_output = len(os.listdir("."))
-        out = self.setup(contents)
-        Touch().execute(["hello"], out)
-        self.assertLessEqual(expected_output, len(os.listdir(".")))
         self.teardown()

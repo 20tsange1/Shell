@@ -98,8 +98,12 @@ class TestHead(unittest.TestCase):
     # Length of output should be less than or equal to n
     @given(
         st.lists(
-            st.text(min_size=1, alphabet="abcdefghijklmnopqrstuvwxyz"),
-            min_size=1,
+            st.text(
+                alphabet=st.characters(
+                    whitelist_categories=("Ll", "Lu", "Nd"),
+                ),
+                min_size=1,
+            ),
         ),
         st.integers(min_value=1, max_value=100),
     )

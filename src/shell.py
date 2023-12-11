@@ -72,9 +72,7 @@ def run():  # pragma: no cover
     if args_num > 0:
         if args_num != 2:
             raise ValueError("Wrong number of command line arguments")
-            raise ValueError("Wrong number of command line arguments")
         if sys.argv[1] != "-c":
-            raise ValueError(f"Unexpected command line argument {sys.argv[1]}")
             raise ValueError(f"Unexpected command line argument {sys.argv[1]}")
         out = deque()
         parse(sys.argv[2], out)

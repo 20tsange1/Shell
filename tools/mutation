@@ -1,0 +1,13 @@
+#!/bin/bash
+
+TOOLS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+cd "$TOOLS_ROOT/../test/test_apps" || exit 1
+
+for file in *.py; do
+    RES=$(basename "$file" .py | sed "s/^test_//")
+    echo "Running mutation tests for $RES..."
+    sed -i '1s/^/import sys\nimport os\nsys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))).replace("test", "src"))\n/' "$file"
+    mutatest -s "../../src/apps/$RES.py" -t "python3 -Wi -m unittest $file"
+    echo "======================================================================"
+    echo "======================================================================"
+done

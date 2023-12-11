@@ -29,16 +29,16 @@ class TestCut(unittest.TestCase):
         # Testing define_ranges of Cut class
         [
             ("3", [["3", "3"]]),
-            ("-3", [["", "3"]]),
+            ("-3", [["1", "3"]]),
             ("4-", [["4", ""]]),
             ("1-3,3-", [["1", ""]]),
             ("2,3,2-", [["2", ""]]),
             ("4,8,6-", [["4", "4"], ["6", ""]]),
-            ("-3,1-2,4", [["", "3"], ["4", "4"]]),
-            ("2,-3,4", [["", "3"], ["4", "4"]]),
-            ("-3,5-", [["", "3"], ["5", ""]]),
-            ("-3,3-", [["", ""]]),
-            ("1-,-2", [["", ""]]),
+            ("-3,1-2,4", [["1", "3"], ["4", "4"]]),
+            ("2,-3,4", [["1", "3"], ["4", "4"]]),
+            ("-3,5-", [["1", "3"], ["5", ""]]),
+            ("-3,3-", [["1", ""]]),
+            ("1-,-2", [["1", ""]]),
             ("1-3,2-7", [["1", "7"]]),
             ("1-5,2-3", [["1", "5"]]),
         ]
@@ -106,11 +106,16 @@ class TestCut(unittest.TestCase):
         assert len(out[0][:-1]) <= min(
             (check_end - check_start) + 1, len(text)
         )
+        self.teardown()
 
     # Subset Property testing
     @given(
         st.text(
-            min_size=50, max_size=100, alphabet="abcdefghijklmnopqrstuvwxyz"
+            min_size=50,
+            max_size=100,
+            alphabet=st.characters(
+                whitelist_categories=("Ll", "Lu", "Nd"),
+            ),
         ),
         st.integers(min_value=1, max_value=100),
         st.integers(min_value=1, max_value=100),
@@ -122,3 +127,21 @@ class TestCut(unittest.TestCase):
             ["-b", f"{check_start}-{check_end}", self.test_file[0]], out
         )
         assert set(out[0][:-1]).issubset(set(text))
+        self.teardown()
+
+    # Order Preservation
+    @given(
+        st.text(
+            min_size=50,
+            max_size=100,
+            alphabet="abcdefghijklmnopqrstuvwxyz",
+        ),
+        st.lists(st.integers(min_value=1, max_value=100), min_size=1),
+    )
+    def test_cut_order(self, text, ranges):
+        out = self.setup(["".join(sorted(text))])
+        Cut().execute(
+            ["-b", ",".join([str(i) for i in ranges]), self.test_file[0]], out
+        )
+        assert "".join(sorted(out[0][:-1])) == out[0][:-1]
+        self.teardown()

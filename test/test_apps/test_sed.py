@@ -96,3 +96,23 @@ class TestSed(unittest.TestCase):
         Sed().execute(["s/World/Universe/", self.test_file[0]], out)
         self.assertEqual("Hello, Universe!\n", "".join(out))
         self.teardown()
+
+    def test_sed_regex_error_stdin(self):
+        out = self.setup(["Hello, World!\n"])
+        with self.assertRaises(ArgumentError):
+            with patch("sys.stdin", open(self.test_file[0])):
+                Sed().execute(["ashdahsdhsa"], out)
+        self.teardown()
+
+    def test_sed_regex_error_file(self):
+        out = self.setup(["Hello, World!\n"])
+        with self.assertRaises(ArgumentError):
+            Sed().execute(["ashdahsdhsa", self.test_file[0]], out)
+        self.teardown()
+
+    def test_sed_no_stdin(self):
+        out = self.setup([""])
+        with self.assertRaises(ArgumentError):
+            with patch("sys.stdin", open(self.test_file[0])):
+                Sed().execute(["ashdahsdhsa"], out)
+        self.teardown()
