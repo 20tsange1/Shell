@@ -7,4 +7,5 @@ class Exit(Application):
         """
         Exits the shell
         """
+        print("Exiting shell. Goodbye! 👋")
         sys.exit()

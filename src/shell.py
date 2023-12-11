@@ -1,6 +1,7 @@
 import io
 import os
 import sys
+import readline
 from antlr.Comp0010ShellLexer import Comp0010ShellLexer
 from antlr.Comp0010ShellParser import Comp0010ShellParser
 from antlr4 import InputStream, CommonTokenStream
@@ -17,13 +18,15 @@ from typing import List
 from visitor import Visitor
 
 
-def parse(cmdline: str, out: List[str]):
+def parse_input(cmdline: str) -> List[str]:
     """
-    Parses a command line input and appends execution result to output
+    Parses a command line input and returns the execution result.
 
     Parameters:
         cmdline (str): Command line input
-        out (List[str]): Output deque
+
+    Returns:
+        List[str]: Output deque
     """
     input_stream = InputStream(io.StringIO(cmdline).read())
     lexer = Comp0010ShellLexer(input_stream)
@@ -32,41 +35,48 @@ def parse(cmdline: str, out: List[str]):
     tree = parser.command()
     visitor = Visitor()
     visitor.visit(tree)
-    for i in visitor.output:
-        out.extend(i)
+    return [item for sublist in visitor.output for item in sublist]
 
 
-def catch_error(cmdline: str, out: List[str]):  # pragma: no cover
+def catch_error(cmdline: str) -> None:
     """
-    Catches errors for interactive mode
+    Catches errors for interactive mode.
 
     Parameters:
         cmdline (str): Command line input
-        out (List[str]): Output deque
     """
     try:
-        parse(cmdline, out)
-    except ValueError as e:
-        print("The following error has occured [USER]: " + str(e))
-    except ArgumentError as e:
-        print("The following error has occured [ARGUMENT]: " + str(e))
-    except ApplicationError as e:
-        print("The following error has occured [APPLICATION]: " + str(e))
-    except DirectoryError as e:
-        print("The following error has occured [DIRECTORY]: " + str(e))
-    except FileError as e:
-        print("The following error has occured [FILE]: " + str(e))
-    except FlagError as e:
-        print("The following error has occured [FLAG]: " + str(e))
-    except RedirectError as e:
-        print("The following error has occured [REDIRECT]: " + str(e))
-    # except Exception as e:
-    #     print("An unknown error has occured: " + str(e))
+        out = parse_input(cmdline)
+        for result in out:
+            print(result, end="")
+    except (ValueError, ArgumentError, ApplicationError, DirectoryError, FileError, FlagError, RedirectError) as e:
+        print(f"The following error has occurred: [{e.__class__.__name__}] {e}")
 
 
-def run():  # pragma: no cover
+def interactive_mode() -> None:
     """
-    Runs the shell
+    Enters the interactive mode.
+    """
+    history = []
+    print("Welcome to the Comp0010 Shell! 🐚")
+    while True:
+        try:
+            cmdline = input(os.getcwd() + "> ")
+            history.append(cmdline)
+
+            readline.set_auto_history(True)
+            readline.parse_and_bind("tab: complete")
+            readline.set_history_length(100)
+
+            catch_error(cmdline)
+        except (KeyboardInterrupt):
+            print("\nExiting shell. Goodbye! 👋")
+            break
+
+
+def run() -> None:
+    """
+    Runs the shell.
     """
     args_num = len(sys.argv) - 1
     if args_num > 0:
@@ -74,19 +84,12 @@ def run():  # pragma: no cover
             raise ValueError("Wrong number of command line arguments")
         if sys.argv[1] != "-c":
             raise ValueError(f"Unexpected command line argument {sys.argv[1]}")
-        out = deque()
-        parse(sys.argv[2], out)
-        while len(out) > 0:
-            print(out.popleft(), end="")
+        out = parse_input(sys.argv[2])
+        for result in out:
+            print(result, end="")
     else:
-        while True:
-            print(os.getcwd() + "> ", end="")
-            cmdline = input()
-            out = deque()
-            catch_error(cmdline, out)
-            while len(out) > 0:
-                print(out.popleft(), end="")
+        interactive_mode()
 
 
-if __name__ == "__main__":  # pragma: no cover
+if __name__ == "__main__":
     run()
