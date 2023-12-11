@@ -1,5 +1,7 @@
 [![Open in Codespaces](https://classroom.github.com/assets/launch-codespace-7f7980b617ed060a017424585567c406b6ee15c891e84e1186181d67ecf80aa0.svg)](https://classroom.github.com/open-in-codespaces?assignment_repo_id=12421504)
+
 # COMP0010 Shell
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 COMP0010 Shell is a [shell](https://en.wikipedia.org/wiki/Shell_(computing)) created for educational purposes. 
 Similarly to other shells, it provides a [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop), an interactive environment that allows users to execute commands. COMP0010 Shell has a simple language for specifying commands that resembles [Bash](https://en.wikipedia.org/wiki/Bash_(Unix_shell)). This language allows, for example, calling applications and connecting the output of one application to the input of another application through a [pipeline](https://en.wikipedia.org/wiki/Pipeline_(Unix)). COMP0010 Shell also provides its own implementations of widely-used UNIX applications for file system and text manipulation: [echo](https://en.wikipedia.org/wiki/Echo_(command)), [ls](https://en.wikipedia.org/wiki/Ls), [cat](https://en.wikipedia.org/wiki/Cat_(Unix)), etc. 
@@ -46,8 +48,9 @@ Then, execute system tests using the following command (Python 3.7 or higher is 
 
 Individual system tests (e.g. `test_cat`) can be executed as
 
-    python system_test/tests.py -v TestShell.test_cat
+    python3 system_test/tests.py -v TestShell.test_cat
     
+
 # Language
 
 A shell can be considered as a language for executing commands. COMP0010 Shell is an interactive shell, that is it parses user's command lines and executes the specified commands in a loop, known also as [REPL]((https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop)), that

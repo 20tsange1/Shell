@@ -17,3 +17,7 @@ jobs:
         run: docker build -t comp0010-system-test .
       - name: Run system tests
         run: python system_test/tests.py -v
+      # - name: Build the Docker image for unit tests
+      #   run: docker build -t shell .
+      # - name: Run coverage tests
+      #   run:  docker run --rm shell /comp0010/tools/coverage

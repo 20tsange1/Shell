@@ -1,0 +1,63 @@
+import unittest
+import os
+import tempfile
+from hypothesis import given, strategies as st
+from apps.touch import Touch
+from error import ArgumentError, FileError
+
+
+class TestTouch(unittest.TestCase):
+    def setup(self, files=None):
+        self.test_dir = tempfile.TemporaryDirectory()
+        self.temp_path = self.test_dir.name
+
+        if files:
+            for file in files:
+                # Create the file
+                with open(os.path.join(self.temp_path, file), "w") as f:
+                    f.write("")
+
+        os.chdir(self.temp_path)
+        return []
+
+    def teardown(self):
+        self.test_dir.cleanup()
+
+    def test_touch_single_file(self):
+        out = self.setup()
+        Touch().execute(["file1.txt"], out)
+        self.assertTrue(os.path.isfile("file1.txt"))
+        self.teardown()
+
+    def test_touch_existing_file(self):
+        out = self.setup(["existing_file.txt"])
+        with self.assertRaises(FileError):
+            Touch().execute(["existing_file.txt"], out)
+        self.teardown()
+
+    def test_touch_wrong_number_of_arguments(self):
+        out = self.setup()
+        with self.assertRaises(ArgumentError):
+            Touch().execute(["file1.txt", "file2.txt"], out)
+        self.teardown()
+
+    # Hypothesis Testing
+    # touched directory must have equal to or more files than before
+    @given(
+        st.lists(
+            st.text(
+                alphabet=st.characters(
+                    whitelist_categories=("Ll", "Lu", "Nd"),
+                ),
+            ),
+            min_size=1,
+            max_size=1,
+        ).filter(lambda lst: all(len(item) > 0 for item in lst)),
+    )
+    def test_touch_count_files(self, contents):
+        contents = [os.path.join(content) for content in contents]
+        expected_output = len(os.listdir("."))
+        out = self.setup(contents)
+        Touch().execute(["hello"], out)
+        self.assertLessEqual(expected_output, len(os.listdir(".")))
+        self.teardown()
