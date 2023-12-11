@@ -1,8 +1,5 @@
-import tempfile
 import unittest
-from pathlib import Path
 from apps.echo import Echo
-# from unittest.mock import patch
 from hypothesis import given, strategies as st
 
 

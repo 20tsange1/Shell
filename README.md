@@ -55,7 +55,7 @@ To execute mutation tests, run
 
     docker run -p 80:8000 -ti --rm shell /comp0010/tools/mutation
 
-Then, the results of the mutation tests will be printed in the terminal.
+Then, the results of the mutation tests will be available at [http://localhost](http://localhost)
 
 To execute system tests, your first need to build a Docker image named `comp0010-system-test`:
 
