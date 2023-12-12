@@ -38,25 +38,27 @@ To execute unit tests, run
 
     docker run -p 80:8000 -ti --rm shell /comp0010/tools/test
 
-Then, the results of unit testing will be available at [http://localhost](http://localhost)
+Then, the results of unit testing will be available at [http://localhost](http://localhost).
 
 To execute code analysis, run
 
     docker run -p 80:8000 -ti --rm shell /comp0010/tools/analysis
 
-Then, the results of code analysis will be available at [http://localhost](http://localhost)
+Then, the results of code analysis will be available at [http://localhost](http://localhost).
 
 To execute test coverage, run
 
     docker run -p 80:8000 -ti --rm shell /comp0010/tools/coverage
 
-Then, the results of coverage computation will be available at [http://localhost](http://localhost)
+Then, the results of coverage computation will be available at [http://localhost](http://localhost).
 
 To execute mutation tests, run
 
     docker run -p 80:8000 -ti --rm shell /comp0010/tools/mutation
 
-Then, the results of the mutation tests will be available at [http://localhost](http://localhost)
+Then, the results of the mutation tests will be available at [http://localhost](http://localhost).
+
+Please be aware that completing the mutation test could take a substantial amount of time, depending on the hardware it is run.
 
 To execute system tests, your first need to build a Docker image named `comp0010-system-test`:
 

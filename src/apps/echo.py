@@ -8,7 +8,7 @@ class Echo(Application):
 
     echo [ARG]...
         - ARG: Arguments to be printed to stdout. \
-hen no arguments are presented, stdin is used.
+When no arguments are presented, stdin is used.
     """
 
     def execute(self, args: List[str], out: List[str]) -> None:
