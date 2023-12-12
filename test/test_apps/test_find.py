@@ -72,6 +72,13 @@ class TestFind(unittest.TestCase):
         self.assertEqual(expected_output, set(out))
         self.teardown()
 
+    def test_not_find_hidden_file(self):
+        out = self.setup(["a.txt", ".b.txt"])
+        Find().execute(["-name", ".b.txt"], out)
+        expected_output = set()
+        self.assertEqual(expected_output, set(out))
+        self.teardown()
+
     def test_find_path_name(self):
         out = self.setup(["a.txt", ["b.txt"]])
         Find().execute(["./", "-name", "a.txt"], out)
@@ -97,8 +104,26 @@ class TestFind(unittest.TestCase):
             Find().execute([], out)
         self.teardown()
 
+    def test_find_no_flag(self):
+        out = self.setup(["a.txt", ["b.txt"]])
+        with self.assertRaises(FlagError):
+            Find().execute(["a.txt"], out)
+        self.teardown()
+
     def test_find_too_many_args(self):
         out = self.setup(["a.txt", ["b.txt"]])
         with self.assertRaises(ArgumentError):
             Find().execute(["-name", "a.txt", "b.txt", "c.txt"], out)
+        self.teardown()
+
+    def test_find_one_arg(self):
+        out = self.setup(["a.txt", ["b.txt"]])
+        with self.assertRaises(FlagError):
+            Find().execute(["-name"], out)
+        self.teardown()
+
+    def test_find_one_arg_directory(self):
+        out = self.setup(["a.txt", ["b.txt"]])
+        with self.assertRaises(FlagError):
+            Find().execute(["./", "-name"], out)
         self.teardown()

@@ -39,6 +39,18 @@ class TestCat(unittest.TestCase):
         self.assertEqual("AAACCC\n", "".join(out))
         self.teardown()
 
+    def test_cat_newline(self):
+        out = self.setup(["AAA\n"])
+        Cat().execute([self.test_file[0]], out)
+        self.assertEqual("AAA\n", "".join(out))
+        self.teardown()
+
+    def test_cat_no_newline(self):
+        out = self.setup(["AAA"])
+        Cat().execute([self.test_file[0]], out)
+        self.assertEqual("AAA\n", "".join(out))
+        self.teardown()
+
     def test_cat_multiple_files_newline(self):
         out = self.setup(["AAA\nBBB\n", "CCC\nDDD\n"])
         Cat().execute([self.test_file[0], self.test_file[1]], out)

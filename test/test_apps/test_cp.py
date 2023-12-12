@@ -157,6 +157,15 @@ class TestCp(unittest.TestCase):
         self.assertEqual("", content)
         self.teardown()
 
+    def test_cp_file_recursive(self):
+        out = self.setup()
+        source_file = "source.txt"
+        destination_file = "destination.txt"
+        self.create_file(source_file)
+        with self.assertRaises(FileError):
+            Cp().execute(["-r", source_file, destination_file], out)
+        self.teardown()
+
     # Hypothesis Testing
     # Copied file existence testing
     @given(st.text())

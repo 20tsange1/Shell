@@ -115,6 +115,7 @@ class TestMv(unittest.TestCase):
         out = self.setup(["source.txt", "destination.txt"])
         with self.assertRaises(FileError):
             Mv().execute(["source.txt", "destination.txt"], out)
+        self.teardown()
 
     def test_mv_empty_directory(self):
         out = self.setup(["empty_directory"])

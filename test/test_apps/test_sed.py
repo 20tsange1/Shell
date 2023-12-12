@@ -34,6 +34,24 @@ class TestSed(unittest.TestCase):
         )
         self.teardown()
 
+    def test_sed_replace_pattern_in_file_without_flags(self):
+        out = self.setup(["Hello, World! World!"])
+        Sed().execute(["s/World/Universe/", self.test_file[0]], out)
+        self.assertEqual(
+            self.read_file_content(self.test_file[0]),
+            "Hello, Universe! World!",
+        )
+        self.teardown()
+
+    def test_sed_replace_pattern_in_file_with_flags(self):
+        out = self.setup(["Hello, World! World! World!"])
+        Sed().execute(["s/World/Universe/g", self.test_file[0]], out)
+        self.assertEqual(
+            self.read_file_content(self.test_file[0]),
+            "Hello, Universe! Universe! Universe!",
+        )
+        self.teardown()
+
     def test_sed_replace_pattern_with_flags(self):
         out = self.setup(["Hello, World! World!"])
         Sed().execute(["s/World/Universe/g", self.test_file[0]], out)

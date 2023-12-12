@@ -46,10 +46,8 @@ class Mv(Application):
     def execute(self, args: List[str], out: List[str]) -> None:
         """
         Executes the mv command
-
         Parameters:
             args (List[str]): Arguments to be passed
-
         Exceptions:
             ArgumentError: If wrong number of arguments passed
         """

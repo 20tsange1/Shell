@@ -34,7 +34,7 @@ class Cp(Application):
         if os.path.isfile(source):
             dest_file = destination
         elif os.path.isdir(source):
-            if os.path.exists(destination) and os.path.isfile(destination):
+            if os.path.isfile(destination):
                 raise DirectoryError("Cannot copy a directory into a file.")
             dest_file = (
                 os.path.join(destination, os.path.basename(source))
@@ -49,18 +49,21 @@ class Cp(Application):
                     f"""Destination file '{dest_file}' already exists. \
                     Use -f to force overwrite"""
                 )
-        if os.path.isdir(source) and recursive:
-            for root, dirs, files in os.walk(source):
-                rel_root = os.path.relpath(root, source)
-                dest_root = os.path.join(destination, rel_root)
-                os.makedirs(dest_root, exist_ok=True)
-                for file in files:
-                    src_path = os.path.join(root, file)
-                    dest_path = os.path.join(dest_root, file)
-                    with open(src_path, "r") as f:
-                        source_lines = f.readlines()
-                    with open(dest_path, "w") as f:
-                        f.writelines(source_lines)
+        if recursive:
+            if os.path.isdir(source):
+                for root, dirs, files in os.walk(source):
+                    rel_root = os.path.relpath(root, source)
+                    dest_root = os.path.join(destination, rel_root)
+                    os.makedirs(dest_root, exist_ok=True)
+                    for file in files:
+                        src_path = os.path.join(root, file)
+                        dest_path = os.path.join(dest_root, file)
+                        with open(src_path, "r") as f:
+                            source_lines = f.readlines()
+                        with open(dest_path, "w") as f:
+                            f.writelines(source_lines)
+            else:
+                raise FileError("Cannot copy a file recursively.")
         else:
             with open(source, "r") as f:
                 source_lines = f.readlines()
@@ -92,7 +95,7 @@ class Cp(Application):
                 recursive = True
             else:
                 raise FlagError(f"Invalid option: {option}")
-        for i in range(0, len(args), 2):
-            source = args[i]
-            destination = args[i + 1]
-            self.copy_file(source, destination, force, recursive)
+
+        source = args[0]
+        destination = args[1]
+        self.copy_file(source, destination, force, recursive)
