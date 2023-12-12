@@ -29,56 +29,64 @@ class TestUniq(unittest.TestCase):
 
     def test_uniq(self):
         out = self.setup(["AAA\nAAA\nBBB\nBBB\nCCC\nCCC\n"])
+        expected_output = "AAA\nBBB\nCCC\n"
         Uniq().execute([self.test_file[0]], out)
-        self.assertEqual("".join(out), "AAA\nBBB\nCCC\n")
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_uniq_2(self):
         out = self.setup(["AAA\naaa\nBBB\nbbb\nCCC\nccc\n"])
+        expected_output = "AAA\naaa\nBBB\nbbb\nCCC\nccc\n"
         Uniq().execute([self.test_file[0]], out)
-        self.assertEqual("".join(out), "AAA\naaa\nBBB\nbbb\nCCC\nccc\n")
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_uniq_lowercase(self):
         out = self.setup(["AAA\naaa\nBBB\nbbb\nCCC\nccc\n"])
+        expected_output = "AAA\nBBB\nCCC\n"
         Uniq().execute(["-i", self.test_file[0]], out)
-        self.assertEqual("".join(out), "AAA\nBBB\nCCC\n")
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_uniq_lowercase_2(self):
         out = self.setup(["aaa\nAAA\nbbb\nBBB\nccc\nCCC\n"])
+        expected_output = "aaa\nbbb\nccc\n"
         Uniq().execute(["-i", self.test_file[0]], out)
-        self.assertEqual("".join(out), "aaa\nbbb\nccc\n")
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_uniq_long(self):
         out = self.setup(
             ["AAA\nAAA\nAAA\nAAA\nAAA\nAAA\nAAA\nAAA\nAAA\nAAA\n"]
         )
+        expected_output = "AAA\n"
         Uniq().execute([self.test_file[0]], out)
-        self.assertEqual("".join(out), "AAA\n")
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_uniq_long_lowercase(self):
         out = self.setup(
             ["AAA\naaa\nAAA\naaa\nAAA\naaa\nAAA\naaa\nAAA\naaa\n"]
         )
+        expected_output = "AAA\n"
         Uniq().execute(["-i", self.test_file[0]], out)
-        self.assertEqual("".join(out), "AAA\n")
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_uniq_stress(self):
         temp = [str(i) + "\n" for i in range(10000)]
         out = self.setup(["".join(temp)])
+        expected_output = "".join(temp)
         Uniq().execute([self.test_file[0]], out)
-        self.assertEqual("".join(out), "".join(temp))
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_uniq_stress_2(self):
         temp = ["Foo\n" for i in range(10000)]
         out = self.setup(["".join(temp)])
+        expected_output = "Foo\n"
         Uniq().execute([self.test_file[0]], out)
-        self.assertEqual("".join(out), "Foo\n")
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_uniq_wrong_flags_1(self):
@@ -101,23 +109,26 @@ class TestUniq(unittest.TestCase):
 
     def test_uniq_stdin(self):
         out = self.setup(["AAA\nAAA\nBBB\nBBB\nCCC\nCCC\n"])
+        expected_output = "AAA\nBBB\nCCC\n"
         with patch("sys.stdin", open(self.test_file[0])):
             Uniq().execute([], out)
-        self.assertEqual("".join(out), "AAA\nBBB\nCCC\n")
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_uniq_2_stdin(self):
         out = self.setup(["AAA\naaa\nBBB\nbbb\nCCC\nccc\n"])
+        expected_output = "AAA\naaa\nBBB\nbbb\nCCC\nccc\n"
         with patch("sys.stdin", open(self.test_file[0])):
             Uniq().execute([], out)
-        self.assertEqual("".join(out), "AAA\naaa\nBBB\nbbb\nCCC\nccc\n")
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_uniq_lowercase_stdin(self):
         out = self.setup(["AAA\naaa\nBBB\nbbb\nCCC\nccc\n"])
+        expected_output = "AAA\nBBB\nCCC\n"
         with patch("sys.stdin", open(self.test_file[0])):
             Uniq().execute(["-i"], out)
-        self.assertEqual("".join(out), "AAA\nBBB\nCCC\n")
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     # Hypothesis tests

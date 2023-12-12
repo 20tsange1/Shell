@@ -32,80 +32,80 @@ class TestSort(unittest.TestCase):
         out = self.setup(
             ["AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"]
         )
+        expected_output = "AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"
         Sort().execute([self.test_file[0]], out)
-        self.assertEqual(
-            "".join(out), "AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"
-        )
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_sort_file_unordered(self):
         out = self.setup(
             ["GGG\nBBB\nCCC\nDDD\nJJJ\nFFF\nEEE\nHHH\nAAA\nIII\n"]
         )
+        expected_output = "AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"
         Sort().execute([self.test_file[0]], out)
-        self.assertEqual(
-            "".join(out), "AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"
-        )
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_sort_file_ordered_reverse(self):
         out = self.setup(
             ["AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"]
         )
+        expected_output = "JJJ\nIII\nHHH\nGGG\nFFF\nEEE\nDDD\nCCC\nBBB\nAAA\n"
         Sort().execute(["-r", self.test_file[0]], out)
-        self.assertEqual(
-            "".join(out), "JJJ\nIII\nHHH\nGGG\nFFF\nEEE\nDDD\nCCC\nBBB\nAAA\n"
-        )
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_sort_file_unordered_reverse(self):
         out = self.setup(
             ["GGG\nBBB\nCCC\nDDD\nJJJ\nFFF\nEEE\nHHH\nAAA\nIII\n"]
         )
+        expected_output = "JJJ\nIII\nHHH\nGGG\nFFF\nEEE\nDDD\nCCC\nBBB\nAAA\n"
         Sort().execute(["-r", self.test_file[0]], out)
-        self.assertEqual(
-            "".join(out), "JJJ\nIII\nHHH\nGGG\nFFF\nEEE\nDDD\nCCC\nBBB\nAAA\n"
-        )
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_sort_file_unordered_length(self):
         out = self.setup(["ABCDEFGH\nABCDEFGHIJK\nABCDEF\n"])
+        expected_output = "ABCDEF\nABCDEFGH\nABCDEFGHIJK\n"
         Sort().execute([self.test_file[0]], out)
-        self.assertEqual("".join(out), "ABCDEF\nABCDEFGH\nABCDEFGHIJK\n")
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_sort_file_unordered_length_reverse(self):
         out = self.setup(["ABCDEFGH\nABCDEFGHIJK\nABCDEF\n"])
+        expected_output = "ABCDEFGHIJK\nABCDEFGH\nABCDEF\n"
         Sort().execute(["-r", self.test_file[0]], out)
-        self.assertEqual("".join(out), "ABCDEFGHIJK\nABCDEFGH\nABCDEF\n")
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_sort_file_unordered_dynamic(self):
         temp = [str(random.randint(0, 100)) for i in range(100)]
         out = self.setup(["\n".join(temp)])
+        expected_output = "\n".join(sorted(temp)) + "\n"
         Sort().execute([self.test_file[0]], out)
-        self.assertEqual("".join(out), "\n".join(sorted(temp)) + "\n")
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_sort_file_unordered_dynamic_reverse(self):
         temp = [str(random.randint(0, 100)) for i in range(100)]
         out = self.setup(["\n".join(temp)])
+        expected_output = "\n".join(sorted(temp, reverse=True)) + "\n"
         Sort().execute(["-r", self.test_file[0]], out)
-        self.assertEqual(
-            "".join(out), "\n".join(sorted(temp, reverse=True)) + "\n"
-        )
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_sort_empty(self):
         out = self.setup([""])
+        expected_output = ""
         Sort().execute([self.test_file[0]], out)
-        self.assertEqual("".join(out), "")
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_sort_empty_reverse(self):
         out = self.setup([""])
+        expected_output = ""
         Sort().execute(["-r", self.test_file[0]], out)
-        self.assertEqual("".join(out), "")
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_sort_wrong_arguments(self):
@@ -116,20 +116,18 @@ class TestSort(unittest.TestCase):
 
     def test_sort_stdin(self):
         out = self.setup(["GGG\nBBB\nCCC\nDDD\nJJJ\nFFF\nEEE\nHHH\nAAA\nIII\n"])
+        expected_output = "AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"
         with patch("sys.stdin", open(self.test_file[0])):
             Sort().execute([], out)
-        self.assertEqual(
-            "".join(out), "AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"
-        )
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_sort_stdin_reverse(self):
         out = self.setup(["GGG\nBBB\nCCC\nDDD\nJJJ\nFFF\nEEE\nHHH\nAAA\nIII\n"])
+        expected_output = "JJJ\nIII\nHHH\nGGG\nFFF\nEEE\nDDD\nCCC\nBBB\nAAA\n"
         with patch("sys.stdin", open(self.test_file[0])):
             Sort().execute(["-r"], out)
-        self.assertEqual(
-            "".join(out), "JJJ\nIII\nHHH\nGGG\nFFF\nEEE\nDDD\nCCC\nBBB\nAAA\n"
-        )
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_sort_invalid_file(self):
@@ -159,8 +157,9 @@ class TestSort(unittest.TestCase):
     )
     def test_sort_hypothesis(self, contents):
         out = self.setup(["\n".join(contents) + "\n"])
+        expected_output = len(contents)
         Sort().execute([self.test_file[0]], out)
-        self.assertEqual(len(out), len(contents))
+        self.assertEqual(expected_output, len(out))
         self.teardown()
 
     # Testing if the output is sorted
@@ -177,6 +176,7 @@ class TestSort(unittest.TestCase):
     )
     def test_sort_hypothesis_sorted(self, contents):
         out = self.setup(["\n".join(contents) + "\n"])
+        expected_output = "\n".join(sorted(contents)) + "\n"
         Sort().execute([self.test_file[0]], out)
-        self.assertEqual("".join(out), "\n".join(sorted(contents)) + "\n")
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()

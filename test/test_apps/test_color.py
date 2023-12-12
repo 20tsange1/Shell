@@ -15,14 +15,16 @@ class TestColor(unittest.TestCase):
 
     def test_color(self):
         out = self.setup()
+        expected_output = "\033[31m"
         Color().execute(["red"], out)
-        self.assertEqual("".join(out), "\033[31m")
+        self.assertEqual("".join(out), expected_output)
         self.teardown()
 
     def test_color_two_words(self):
         out = self.setup()
+        expected_output = "\033[91m"
         Color().execute(["light red"], out)
-        self.assertEqual("".join(out), "\033[91m")
+        self.assertEqual("".join(out), expected_output)
         self.teardown()
 
     def test_color_invalid(self):

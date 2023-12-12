@@ -25,48 +25,51 @@ class TestWc(unittest.TestCase):
     def test_wc_count_lines(self):
         self.setup(["Line 1\nLine 2\nLine 3"])
         out = []
+        expected_output = ["3\n"]
         Wc().execute(["-l"] + self.test_file, out)
-        self.assertEqual(out, ["3\n"])
+        self.assertEqual(expected_output, out)
         self.teardown()
 
     def test_wc_count_words(self):
         self.setup(["This is a sample text for word count."])
         out = []
+        expected_output = ["8" + "\n"]
         Wc().execute(["-w"] + self.test_file, out)
-        self.assertEqual(out, ["8" + "\n"])
+        self.assertEqual(expected_output, out)
         self.teardown()
 
     def test_wc_count_characters(self):
         self.setup(["Hello, World!"])
         out = []
+        expected_output = ["13" + "\n"]
         Wc().execute(["-m"] + self.test_file, out)
-        self.assertEqual(out, ["13" + "\n"])
+        self.assertEqual(expected_output, out)
         self.teardown()
 
     def test_wc_multiple_options(self):
         self.setup(["Multiple options for testing wc command."])
         out = []
-        Wc().execute([] + self.test_file, out)
         expected_output = ["1\n", "6\n", "40\n"]
-        self.assertEqual(out, expected_output)
+        Wc().execute([] + self.test_file, out)
+        self.assertEqual(expected_output, out)
         self.teardown()
 
     def test_wc_stdin(self):
         self.setup(["Multiple options for testing wc command."])
         out = []
+        expected_output = ["1\n", "6\n", "40\n"]
         with patch("sys.stdin", open(self.test_file[0])):
             Wc().execute([], out)
-        expected_output = ["1\n", "6\n", "40\n"]
-        self.assertEqual(out, expected_output)
+        self.assertEqual(expected_output, out)
         self.teardown()
 
     def test_wc_stdin_with_flags(self):
         self.setup(["Multiple options for testing wc command."])
         out = []
+        expected_output = ["1" + "\n"]
         with patch("sys.stdin", open(self.test_file[0])):
             Wc().execute(["-l"], out)
-        expected_output = ["1" + "\n"]
-        self.assertEqual(out, expected_output)
+        self.assertEqual(expected_output, out)
         self.teardown()
 
     def test_wc_wrong_arguments(self):

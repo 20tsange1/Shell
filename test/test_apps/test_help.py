@@ -1,20 +1,11 @@
-from application import Application
+import unittest
+from apps.help import Help
 from error import ArgumentError
 
-
-class Help(Application):
-    """
-    Prints the help message.
-    """
-    def execute(self, args=None, out=None) -> None:
-        """
-        Executes the help command
-        """
-        if len(args) > 0:
-            raise ArgumentError("Wrong number of command line arguments [help]")
-            
-        out.append(
-    """
+class TestHelp(unittest.TestCase):
+    def test_help(self):
+        out = []
+        expected_output = """
     Usage 🚀:
 
         <command> [<args>] : Run one of the available commands.
@@ -30,4 +21,10 @@ class Help(Application):
 
     Use <command> --help or <command> -h for more information about a command.
     """ + "\n"
-        )
+        Help().execute([], out)
+        self.assertEqual(expected_output, "".join(out))
+
+    def test_help_too_many_args(self):
+        out = []
+        with self.assertRaises(ArgumentError):
+            Help().execute(["-h", "-h"], out)

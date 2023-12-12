@@ -6,7 +6,7 @@ from application import Application
 class Cat(Application):
     """
     Concatenates the content of given files and prints it to stdout.
-
+    
     Usage: cat [FILE]...
         - FILE(s): Name(s) of the file(s) to concatenate. If no files are specified, uses stdin.
     """

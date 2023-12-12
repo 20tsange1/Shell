@@ -24,8 +24,8 @@ class TestLs(unittest.TestCase):
 
     def test_ls(self):
         out = self.setup(["file1", "file2", "dir1"])
-        Ls().execute([], out)
         expected_output = {"dir1\n", "file1\n", "file2\n"}
+        Ls().execute([], out)
         self.assertEqual(expected_output, set(out))
         self.teardown()
 
@@ -36,8 +36,8 @@ class TestLs(unittest.TestCase):
         os.mkdir("dir2")
         os.mkdir("dir3")
         os.chdir(str(self.temp_path))
-        Ls().execute(["dir1"], out)
         expected_output = {"dir2\n", "dir3\n"}
+        Ls().execute(["dir1"], out)
         self.assertEqual(expected_output, set(out))
         self.teardown()
 
@@ -49,8 +49,8 @@ class TestLs(unittest.TestCase):
 
     def test_ls_hidden_files(self):
         out = self.setup(["file1", ".file2"])
-        Ls().execute([], out)
         expected_output = {"file1\n"}
+        Ls().execute([], out)
         self.assertEqual(expected_output, set(out))
         self.teardown()
 

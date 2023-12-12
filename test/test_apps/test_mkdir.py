@@ -20,8 +20,8 @@ class TestMkdir(unittest.TestCase):
     def test_mkdir_single_directory(self):
         out = self.setup()
         directory_name = "new_directory"
-        Mkdir().execute([directory_name], out)
         expected_output = ""
+        Mkdir().execute([directory_name], out)
         self.assertEqual(expected_output, "".join(out))
         self.assertTrue(os.path.isdir(directory_name))
         self.teardown()
@@ -29,8 +29,8 @@ class TestMkdir(unittest.TestCase):
     def test_mkdir_relative_path(self):
         out = self.setup()
         directory_name = "relative_directory"
-        Mkdir().execute(["./" + directory_name], out)
         expected_output = ""
+        Mkdir().execute(["./" + directory_name], out)
         self.assertEqual(expected_output, "".join(out))
         self.assertTrue(os.path.isdir(directory_name))
         self.teardown()
@@ -39,8 +39,8 @@ class TestMkdir(unittest.TestCase):
         out = self.setup()
         directory_name = "absolute_directory"
         absolute_path = os.path.join(self.test_dir.name, directory_name)
-        Mkdir().execute([absolute_path], out)
         expected_output = ""
+        Mkdir().execute([absolute_path], out)
         self.assertEqual(expected_output, "".join(out))
         self.assertTrue(os.path.isdir(absolute_path))
         self.teardown()
@@ -49,8 +49,8 @@ class TestMkdir(unittest.TestCase):
         out = self.setup()
         os.mkdir("parent")
         nested_directory = "parent/child"
-        Mkdir().execute([nested_directory], out)
         expected_output = ""
+        Mkdir().execute([nested_directory], out)
         self.assertEqual(expected_output, "".join(out))
         self.assertTrue(os.path.isdir(nested_directory))
         self.teardown()
@@ -58,8 +58,8 @@ class TestMkdir(unittest.TestCase):
     def test_mkdir_special_characters_directory(self):
         out = self.setup()
         special_characters_directory = "!@#$%^&*()_+-=[]{}"
-        Mkdir().execute([special_characters_directory], out)
         expected_output = ""
+        Mkdir().execute([special_characters_directory], out)
         self.assertEqual(expected_output, "".join(out))
         self.assertTrue(os.path.isdir(special_characters_directory))
         self.teardown()
@@ -67,8 +67,8 @@ class TestMkdir(unittest.TestCase):
     def test_mkdir_unicode_directory(self):
         out = self.setup()
         unicode_directory = "紅太陽在天上"
-        Mkdir().execute([unicode_directory], out)
         expected_output = ""
+        Mkdir().execute([unicode_directory], out)
         self.assertEqual(expected_output, "".join(out))
         self.assertTrue(os.path.isdir(unicode_directory))
         self.teardown()
@@ -99,6 +99,7 @@ class TestMkdir(unittest.TestCase):
         out = self.setup()
         if directory_name == "":
             return
+        expected_output = ""
         Mkdir().execute([directory_name], out)
         self.assertTrue(os.path.isdir(directory_name))
         self.teardown()

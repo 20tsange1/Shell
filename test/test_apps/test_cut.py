@@ -48,12 +48,19 @@ class TestCut(unittest.TestCase):
     )
     def test_cut_ranges(self, args, expected):
         out = Cut().define_ranges(args)
-        self.assertEqual(out, expected)
+        self.assertEqual(expected, out)
 
     def test_cut(self):
         out = self.setup(["ABCDEF\nBCDEFGHIJK\nABCDEF\n"])
+        expected_output = "ACE\nBDF\nACE\n"
         Cut().execute(["-b", "1,3,5", self.test_file[0]], out)
-        self.assertEqual("".join(out), "ACE\nBDF\nACE\n")
+        self.assertEqual(expected_output, "".join(out))
+
+    def test_cut_range(self):
+        out = self.setup(["ABCDEF\nBCDEFGHIJK\nABCDEF\n"])
+        expected_output = "BCDE\nCDEF\nBCDE\n"
+        Cut().execute(["-b", "2-5", self.test_file[0]], out)
+        self.assertEqual(expected_output, "".join(out))
 
     def test_cut_wrong_flags(self):
         out = self.setup([])
@@ -75,9 +82,10 @@ class TestCut(unittest.TestCase):
 
     def test_cut_stdin(self):
         out = self.setup(["ABCDEF\nBCDEFGHIJK\nABCDEF\n"])
+        expected_output = "ABCDEF\nBCDEFGHIJK\nABCDEF\n"
         with patch("sys.stdin", open(self.test_file[0])):
             Cut().execute(["-b", "1-3,3-"], out)
-        self.assertEqual("".join(out), "ABCDEF\nBCDEFGHIJK\nABCDEF\n")
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_cut_stdin_empty(self):
@@ -106,10 +114,11 @@ class TestCut(unittest.TestCase):
         Cut().execute(
             ["-b", f"{check_start}-{check_end}", self.test_file[0]], out
         )
-        self.assertLessEqual(len(out[0][:-1]), 
-        min(
-            (check_end - check_start) + 1, len(text)
-        ))
+        expected_output = min((check_end - check_start) + 1, len(text))
+        self.assertLessEqual(
+            len(out[0][:-1]),
+            expected_output
+        )
         self.teardown()
 
     # Subset Property testing
@@ -130,7 +139,7 @@ class TestCut(unittest.TestCase):
         Cut().execute(
             ["-b", f"{check_start}-{check_end}", self.test_file[0]], out
         )
-        self.assertTrue(set(out[0][:-1]).issubset(set(text)))
+        self.assertTrue(set(text).issuperset(set(out[0][:-1])))
         self.teardown()
 
     # Order Preservation
@@ -147,5 +156,5 @@ class TestCut(unittest.TestCase):
         Cut().execute(
             ["-b", ",".join([str(i) for i in ranges]), self.test_file[0]], out
         )
-        self.assertEqual("".join(sorted(out[0][:-1])), out[0][:-1])
+        self.assertEqual(out[0][:-1], "".join(sorted(out[0][:-1])))
         self.teardown()

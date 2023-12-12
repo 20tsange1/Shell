@@ -19,13 +19,15 @@ class TestPwd(unittest.TestCase):
 
     def test_pwd(self):
         out = self.setup()
+        expected_output = str(self.temp_path) + "\n"
         Pwd().execute([], out)
-        self.assertEqual(str(self.temp_path) + "\n", "".join(out))
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_pwd_root(self):
         out = self.setup()
         os.chdir("/")
+        expected_output = "/\n"
         Pwd().execute([], out)
-        self.assertEqual("/\n", "".join(out))
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()

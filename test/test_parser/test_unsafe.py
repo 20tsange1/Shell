@@ -5,7 +5,6 @@ from apps.uniq import Uniq
 from application import Application
 from unsafe_decorator import UnsafeDecorator
 from application_factory import ApplicationFactory
-from error import ApplicationError
 
 class TestUnsafe(unittest.TestCase):
     def setup(self, contents):
@@ -23,27 +22,33 @@ class TestUnsafe(unittest.TestCase):
 
     def test_unsafe_uniq(self):
         out = self.setup(["AAA\nAAA\nBBB\nBBB\nCCC\nCCC\n"])
+        expected_output = "AAA\nBBB\nCCC\n"
         UnsafeDecorator(Uniq()).execute([self.test_file[0]], out)
-        self.assertEqual("".join(out), "AAA\nBBB\nCCC\n")
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_unsafe_uniq_throw(self):
         out = self.setup(["AAA\nAAA\nBBB\nBBB\nCCC\nCCC\n"])
+        expected_output = "An exception occurred: Wrong flags [uniq -i <file>?]\n"
         UnsafeDecorator(Uniq()).execute(["-c", self.test_file[0]], out)
         self.assertEqual(
+            expected_output,
             "".join(out),
-            "An exception occurred: Wrong flags [uniq -i <file>?]\n",
         )
         self.teardown()
 
-    def test_safe_apps(self):
+    def test_safe_application(self):
         self.setup([])
-        self.assertEqual(
-            len(ApplicationFactory(unsafe=False).application_map), 23
+        appfactory = ApplicationFactory(unsafe=False)
+        self.assertFalse(
+            isinstance(appfactory.application_map["uniq"], Uniq)
         )
         self.teardown()
 
-    def test_unsafe_apps(self):
+    def test_unsafe_application(self):
         self.setup([])
-        self.assertEqual(len(ApplicationFactory().application_map), 46)
+        appfactory = ApplicationFactory(unsafe=True)
+        self.assertTrue(
+            isinstance(appfactory.application_map["_uniq"], UnsafeDecorator)
+        )
         self.teardown()

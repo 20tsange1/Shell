@@ -29,90 +29,98 @@ class TestGrep(unittest.TestCase):
         out = self.setup(
             ["AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"]
         )
+        expected_output = "AAA\n"
         Grep().execute(["AAA", self.test_file[0]], out)
-        self.assertEqual("AAA\n", "".join(out))
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_grep_not(self):
         out = self.setup(
             ["AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"]
         )
+        expected_output = "AAA\n"
         Grep().execute(["^A", self.test_file[0]], out)
-        self.assertEqual("AAA\n", "".join(out))
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_grep_character_set(self):
         out = self.setup(
             ["AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"]
         )
+        expected_output = "AAA\nIII\n"
         Grep().execute(["[AI]", self.test_file[0]], out)
-        self.assertEqual("AAA\nIII\n", "".join(out))
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_grep_character_set_not(self):
         out = self.setup(
             ["AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"]
         )
+        expected_output = "BBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nJJJ\n"
         Grep().execute(["[^AI]", self.test_file[0]], out)
-        self.assertEqual(
-            "BBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nJJJ\n", "".join(out)
-        )
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_grep_character_range(self):
         out = self.setup(
             ["AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"]
         )
+        expected_output = "AAA\nBBB\nCCC\n"
         Grep().execute(["[A-C]", self.test_file[0]], out)
-        self.assertEqual("AAA\nBBB\nCCC\n", "".join(out))
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_grep_character_range_kleene(self):
         out = self.setup(
             ["AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"]
         )
+        expected_output = "AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"
         Grep().execute(["[D-E]*", self.test_file[0]], out)
-        self.assertEqual(
-            "AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n", "".join(out)
-        )
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_grep_character_range_plus(self):
         out = self.setup(
             ["AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"]
         )
+        expected_output = "DDD\nEEE\n"
         Grep().execute(["[D-E]+", self.test_file[0]], out)
-        self.assertEqual("DDD\nEEE\n", "".join(out))
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_grep_character_range_question(self):
         out = self.setup(["ABCDEFG\nDEFGHIJ\nGHIJKLM\n"])
+        expected_output = "DEFGHIJ\n"
         Grep().execute(["[D-E]", self.test_file[0]], out)
-        self.assertEqual("DEFGHIJ\n", "".join(out))
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_grep_digits(self):
         out = self.setup(["123\nABC\n789\nABC123\n"])
+        expected_output = "123\n789\n"
         Grep().execute(["[0-9]", self.test_file[0]], out)
-        self.assertEqual("123\n789\n", "".join(out))
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_grep_empty_file(self):
         out = self.setup([""])
+        expected_output = ""
         Grep().execute(["AAA", self.test_file[0]], out)
-        self.assertEqual("", "".join(out))
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_grep_no_eol(self):
         out = self.setup(["AAA"])
+        expected_output = "AAA\n"
         Grep().execute(["AAA", self.test_file[0]], out)
-        self.assertEqual("AAA\n", "".join(out))
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_grep_value_error(self):
         out = self.setup(
             ["AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"]
         )
+        expected_output = ""
         with self.assertRaises(ArgumentError):
             Grep().execute([], out)
         self.teardown()
@@ -121,6 +129,7 @@ class TestGrep(unittest.TestCase):
         out = self.setup(
             ["AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"]
         )
+        expected_output = ""
         with self.assertRaises(FileError):
             Grep().execute(["AAA", "invalid_file"], out)
         self.teardown()
@@ -129,9 +138,10 @@ class TestGrep(unittest.TestCase):
         out = self.setup(
             ["AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"]
         )
+        expected_output = "AAA\n"
         with patch("sys.stdin", open(self.test_file[0])):
             Grep().execute(["AAA"], out)
-        self.assertEqual("AAA\n", "".join(out))
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_grep_multiple_files(self):
@@ -141,11 +151,11 @@ class TestGrep(unittest.TestCase):
                 "AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n",
             ]
         )
-        Grep().execute(["AAA", self.test_file[0], self.test_file[1]], out)
-        self.assertEqual(
-            self.test_file[0] + ":AAA\n" + self.test_file[1] + ":AAA\n",
-            "".join(out),
+        expected_output = (
+            self.test_file[0] + ":AAA\n" + self.test_file[1] + ":AAA\n"
         )
+        Grep().execute(["AAA", self.test_file[0], self.test_file[1]], out)
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_grep_invalid_regex(self):

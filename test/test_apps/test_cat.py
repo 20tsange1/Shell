@@ -27,16 +27,16 @@ class TestCat(unittest.TestCase):
         out = self.setup(
             ["AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"]
         )
+        expected_output = "AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"
         Cat().execute([self.test_file[0]], out)
-        self.assertEqual(
-            "AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n", "".join(out)
-        )
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_cat_multiple_files(self):
         out = self.setup(["AAA", "CCC\n"])
+        expected_output = "AAACCC\n"
         Cat().execute([self.test_file[0], self.test_file[1]], out)
-        self.assertEqual("AAACCC\n", "".join(out))
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_cat_newline(self):
@@ -53,14 +53,16 @@ class TestCat(unittest.TestCase):
 
     def test_cat_multiple_files_newline(self):
         out = self.setup(["AAA\nBBB\n", "CCC\nDDD\n"])
+        expected_output = "AAA\nBBB\nCCC\nDDD\n"
         Cat().execute([self.test_file[0], self.test_file[1]], out)
-        self.assertEqual("AAA\nBBB\nCCC\nDDD\n", "".join(out))
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_cat_file_no_newline(self):
         out = self.setup(["AAA\nBBB"])
+        expected_output = "AAA\nBBB\n"
         Cat().execute([self.test_file[0]], out)
-        self.assertEqual("AAA\nBBB\n", "".join(out))
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_cat_non_existent_file(self):
@@ -75,31 +77,33 @@ class TestCat(unittest.TestCase):
         out = self.setup(
             ["AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"]
         )
+        expected_output = "AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"
         with patch("sys.stdin", open(self.test_file[0])):
             Cat().execute([], out)
-        self.assertEqual(
-            "AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n", "".join(out)
-        )
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_cat_special_characters(self):
         out = self.setup(["$%^&*\n@#!\n"])
+        expected_output = "$%^&*\n@#!\n"
         Cat().execute([self.test_file[0]], out)
-        self.assertEqual("$%^&*\n@#!\n", "".join(out))
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_cat_multiple_files_order(self):
         out = self.setup(["AAA\n", "BBB\n", "CCC\n"])
+        expected_output = "AAA\nBBB\nCCC\n"
         Cat().execute(
             [self.test_file[0], self.test_file[1], self.test_file[2]], out
         )
-        self.assertEqual("AAA\nBBB\nCCC\n", "".join(out))
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_cat_empty_file(self):
         out = self.setup([""])
+        expected_output = ""
         Cat().execute([self.test_file[0]], out)
-        self.assertEqual("", "".join(out))
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     # Hypothesis tests
@@ -117,9 +121,9 @@ class TestCat(unittest.TestCase):
     )
     def test_cat_chars_less_than_invariant(self, contents):
         out = self.setup(contents)
+        expected_output = len(contents[0])
         Cat().execute([self.test_file[0], self.test_file[1]], out)
-        expected_result = len(contents[0])
-        self.assertLessEqual(expected_result, len("".join(out)))
+        self.assertLessEqual(expected_output, len("".join(out)))
         self.teardown()
 
     # Chars in output == input testing
@@ -136,7 +140,7 @@ class TestCat(unittest.TestCase):
     )
     def test_cat_chars_equal_invariant(self, contents):
         out = self.setup(contents)
+        expected_output = len(contents[0]) + len(contents[1])
         Cat().execute([self.test_file[0], self.test_file[1]], out)
-        expected_result = len(contents[0]) + len(contents[1])
-        self.assertLessEqual(expected_result, len("".join(out)))
+        self.assertLessEqual(expected_output, len("".join(out)))
         self.teardown()

@@ -72,6 +72,13 @@ Individual system tests (e.g. `test_cat`) can be executed as
 ## Applications
 In our version of the COMP0010 Shell, we have implemented the following applications below:
 
+### help
+Displays a description of the commands available and syntax to follow.
+
+    help
+
+Use <command> --help or <command> -h for more information about a command.
+
 ### cat
 
 Concatenates the content of given files and prints it to stdout:

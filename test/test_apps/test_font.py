@@ -15,8 +15,9 @@ class TestFont(unittest.TestCase):
 
     def test_font(self):
         out = self.setup()
+        expected_output = "\033[1m"
         Font().execute(["bold"], out)
-        self.assertEqual("".join(out), "\033[1m")
+        self.assertEqual(expected_output, "".join(out))
         self.teardown()
 
     def test_font_invalid(self):
