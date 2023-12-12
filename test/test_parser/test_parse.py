@@ -1,26 +1,9 @@
-import tempfile
 import unittest
-import os
-from pathlib import Path
-from shell import parse, catch_error
-from error import ArgumentError
+from shell import parse
 from parameterized import parameterized
 
 
 class TestParse(unittest.TestCase):
-    def setup(self, contents):
-    #     self.test_dir = tempfile.TemporaryDirectory()
-    #     self.temp_path = Path(self.test_dir.name)
-    #     self.test_file = []
-    #     for i in range(len(contents)):
-    #         self.test_file.append(str(self.temp_path) + f"/test-{i}.txt")
-    #         with open(self.test_file[i], "w") as f:
-    #             f.write(contents[i])
-        return []
-
-    # def teardown(self):
-    #     self.test_dir.cleanup()
-
     @parameterized.expand(
         # Testing Edge Cases
         [
@@ -43,7 +26,5 @@ class TestParse(unittest.TestCase):
         ]
     )
     def test_quotation_cases(self, commandline, expected):
-        out = self.setup([])
         out = parse(commandline)
         self.assertEqual(''.join(out).rstrip(), expected)
-        # self.teardown()

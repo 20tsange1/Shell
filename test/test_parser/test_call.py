@@ -47,6 +47,13 @@ class TestVisitor(unittest.TestCase):
         self.assertEqual("AAA\n", "".join(out))
         self.teardown()
 
+    def test_call_pipe(self):
+        out = self.setup(["AAA\n"])
+        expected_output = "AAA\n"
+        Call(["cat"], [], [], [out], io.StringIO("AAA\n"))
+        self.assertEqual(expected_output, "".join(out))
+        self.teardown()
+
     def test_redirect_stdout(self):
         out = self.setup([""])
         Call(["echo", "Foo", "Bar"], [], [[self.test_file[0], "w"]], [out])

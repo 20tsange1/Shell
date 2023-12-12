@@ -1,0 +1,19 @@
+
+name: Automated Unit Tests
+
+on:
+  push:
+    branches:
+      - "**" # matches every branch
+      
+jobs:
+  System-Tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+      - name: Build the Docker image for unit tests
+        run: docker build -t shell .
+      - name: Run unit tests
+        run: docker run --rm shell /comp0010/tools/test_no_http
