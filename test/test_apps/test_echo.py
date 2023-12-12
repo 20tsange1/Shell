@@ -4,6 +4,7 @@ from hypothesis import given, strategies as st
 
 
 class TestEcho(unittest.TestCase):
+    @classmethod
     def setup(self):
         return []
 

@@ -4,9 +4,15 @@ from application import Application
 
 
 class Cat(Application):
+    """
+    Concatenates the content of given files and prints it to stdout.
+    
+    Usage: cat [FILE]...
+        - FILE(s): Name(s) of the file(s) to concatenate. If no files are specified, uses stdin.
+    """
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Concatenates input files
+        Executes the cat command
 
         Parameters:
             args (List[str]): Arguments (filenames) to be passed

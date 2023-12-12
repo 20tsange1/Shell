@@ -5,7 +5,7 @@ pipe: pipe '|' call | call '|' call | pipe '|' command;
 call: WHITESPACE? (redirection WHITESPACE)* argument (WHITESPACE? atom)* WHITESPACE?;
 atom: redirection | argument;
 argument: (quoted | UNQUOTED)+;
-redirection: '<' WHITESPACE? argument | '>' WHITESPACE? argument;
+redirection: '<' WHITESPACE? argument | '>' WHITESPACE? argument | '>>' WHITESPACE? argument;
 
 
 UNQUOTED: ~[ \t\n'"`<>|;]+;

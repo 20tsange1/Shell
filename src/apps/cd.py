@@ -5,9 +5,15 @@ from application import Application
 
 
 class Cd(Application):
+    """
+    Changes the current working directory.
+
+    Usage: cd [PATH]
+        - PATH: A relative path to the target directory.
+    """
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Changes current directory
+        Executes the cd command
 
         Parameters:
             args (List[str]): Arguments to be passed

@@ -7,6 +7,13 @@ from application import Application
 
 
 class Find(Application):
+    """
+    Finds all paths where the pattern is matched.
+    
+    Usage: find [DIR]? -name [PATTERN]
+        - DIR: A directory to search in. If not specified, uses the current directory.
+        - PATTERN: The pattern to be matched.
+    """
     def find(
         self, dire: str, prev: str, pattern: str, found: List[str], flag: bool
     ) -> None:
@@ -55,7 +62,7 @@ class Find(Application):
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Finding all paths where the pattern is matched
+        Executes the find command
 
         Parameters:
             args (List[str]): Arguments to be passed

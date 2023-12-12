@@ -75,7 +75,8 @@ class Call:
         self.eval(app, output[-1])
 
         if outputIO:
-            output_file = open(outputIO.pop(), "w")
+            output_name, setting = outputIO.pop()
+            output_file = open(output_name, setting)
             output_file.write("".join(output.pop()))
 
         if input_stream:

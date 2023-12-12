@@ -7,6 +7,7 @@ from error import ArgumentError, FileError, DirectoryError
 
 
 class TestRm(unittest.TestCase):
+    @classmethod
     def setup(self, files=None, directories=None):
         self.test_dir = tempfile.TemporaryDirectory()
         self.temp_path = self.test_dir.name
@@ -23,6 +24,7 @@ class TestRm(unittest.TestCase):
         os.chdir(self.temp_path)
         return []
 
+    @classmethod
     def teardown(self):
         self.test_dir.cleanup()
 

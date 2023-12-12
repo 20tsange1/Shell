@@ -7,6 +7,8 @@ from error import ArgumentError, FlagError, DirectoryError
 
 
 class TestFind(unittest.TestCase):
+
+    @classmethod
     def setup(self, files):
         self.test_dir = tempfile.TemporaryDirectory()
         self.temp_path = Path(self.test_dir.name)
@@ -27,6 +29,7 @@ class TestFind(unittest.TestCase):
 
         return []
 
+    @classmethod
     def teardown(self):
         self.test_dir.cleanup()
 

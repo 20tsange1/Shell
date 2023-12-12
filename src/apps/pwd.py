@@ -4,9 +4,14 @@ from application import Application
 
 
 class Pwd(Application):
+    """
+    Outputs the current working directory.
+    
+    Usage: pwd
+    """
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Returns the current directory
+        Executes the pwd command
 
         Parameters:
             args (List[str]): Arguments to be passed

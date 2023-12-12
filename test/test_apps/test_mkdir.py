@@ -7,11 +7,13 @@ from error import ArgumentError, DirectoryError
 
 
 class TestMkdir(unittest.TestCase):
+    @classmethod
     def setup(self):
         self.test_dir = tempfile.TemporaryDirectory()
         os.chdir(self.test_dir.name)
         return []
 
+    @classmethod
     def teardown(self):
         self.test_dir.cleanup()
 

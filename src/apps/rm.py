@@ -5,9 +5,15 @@ from application import Application
 
 
 class Rm(Application):
+    """
+    Removes a file.
+    
+    Usage: rm [PATH]
+        - PATH: The path to the file to remove.
+    """
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Removes a file
+        Executes the rm command
 
         Parameters:
             args (List[str]): Arguments to be passed

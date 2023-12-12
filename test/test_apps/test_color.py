@@ -4,9 +4,11 @@ from error import ArgumentError, FlagError
 
 
 class TestColor(unittest.TestCase):
+    @classmethod
     def setup(self):
         return []
 
+    @classmethod
     def teardown(self):
         print("\033[0m")
         pass

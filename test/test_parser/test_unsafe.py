@@ -2,9 +2,10 @@ import tempfile
 import unittest
 from pathlib import Path
 from apps.uniq import Uniq
+from application import Application
 from unsafe_decorator import UnsafeDecorator
 from application_factory import ApplicationFactory
-
+from error import ApplicationError
 
 class TestUnsafe(unittest.TestCase):
     def setup(self, contents):
@@ -36,13 +37,13 @@ class TestUnsafe(unittest.TestCase):
         self.teardown()
 
     def test_safe_apps(self):
-        self.setup("")
+        self.setup([])
         self.assertEqual(
             len(ApplicationFactory(unsafe=False).application_map), 23
         )
         self.teardown()
 
     def test_unsafe_apps(self):
-        self.setup("")
+        self.setup([])
         self.assertEqual(len(ApplicationFactory().application_map), 46)
         self.teardown()

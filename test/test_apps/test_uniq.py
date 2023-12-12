@@ -10,6 +10,7 @@ from unittest.mock import patch
 
 
 class TestUniq(unittest.TestCase):
+    @classmethod
     def setup(self, contents):
         self.test_dir = tempfile.TemporaryDirectory()
         self.temp_path = Path(self.test_dir.name)
@@ -21,6 +22,7 @@ class TestUniq(unittest.TestCase):
                 f.write(contents[i])
         return []
 
+    @classmethod
     def teardown(self):
         self.test_dir.cleanup()
         sys.stdin = self.saved_stdin

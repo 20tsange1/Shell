@@ -6,6 +6,7 @@ from error import ArgumentError, FileError
 
 
 class TestTouch(unittest.TestCase):
+    @classmethod
     def setup(self, files=None):
         self.test_dir = tempfile.TemporaryDirectory()
         self.temp_path = self.test_dir.name
@@ -19,6 +20,7 @@ class TestTouch(unittest.TestCase):
         os.chdir(self.temp_path)
         return []
 
+    @classmethod
     def teardown(self):
         self.test_dir.cleanup()
 

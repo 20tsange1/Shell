@@ -7,6 +7,7 @@ from error import ArgumentError, FlagError, DirectoryError
 
 
 class TestRmdir(unittest.TestCase):
+    @classmethod
     def setup(self, directories=None):
         self.test_dir = tempfile.TemporaryDirectory()
         self.temp_path = self.test_dir.name
@@ -18,6 +19,7 @@ class TestRmdir(unittest.TestCase):
         os.chdir(self.temp_path)
         return []
 
+    @classmethod
     def teardown(self):
         self.test_dir.cleanup()
 

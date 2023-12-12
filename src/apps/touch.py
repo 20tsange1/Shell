@@ -5,9 +5,15 @@ from application import Application
 
 
 class Touch(Application):
+    """
+    Creates an empty file if it doesn't already exist.
+    
+    Usage: touch [FILE]
+        - FILE: The name of the file to create.
+    """
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Creates an empty file if it doesn't already exist
+        Executes the touch command
 
         Parameters:
             args (List[str]): Arguments to be passed.

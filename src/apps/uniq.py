@@ -4,7 +4,15 @@ from application import Application
 
 
 class Uniq(Application):
-    def return_uniq(self, lines: List[str], ignore_case: bool) -> List[str]:
+    """
+    Removes non-unique adjacent lines from input.
+    
+    Usage: uniq [-i]? [FILE]?
+        - [-i]: Ignores case.
+        - FILE: The name of the file. If not specified, uses stdin.
+    """
+    @staticmethod
+    def return_uniq(lines: List[str], ignore_case: bool) -> List[str]:
         """
         Returns a list with non-match adjacent lines
 
@@ -59,7 +67,7 @@ class Uniq(Application):
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Removes non-unique adjacent lines
+        Executes the uniq command
 
         Parameters:
             args (List[str]): Arguments to be passed

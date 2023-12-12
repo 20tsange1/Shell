@@ -5,7 +5,17 @@ from application import Application
 
 
 class Mv(Application):
-    def move_file(self, source: str, destination: str, force: bool) -> None:
+    """
+    Moves a file or directory to another location.
+    
+    Usage: mv [OPTION] SOURCE DEST
+        - OPTION: Specifies the behaviour of mv:
+            - [-f]: forces a file to be overwritten.
+        - SOURCE: Specifies the file/directory to be moved.
+        - DEST: Specifies the output file/directory.
+    """
+    @staticmethod
+    def move_file(source: str, destination: str, force: bool) -> None:
         """
         Checks whether desired destination exists and moves file
 
@@ -35,7 +45,7 @@ class Mv(Application):
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Moves a file
+        Executes the mv command
 
         Parameters:
             args (List[str]): Arguments to be passed

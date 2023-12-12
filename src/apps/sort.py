@@ -4,9 +4,16 @@ from application import Application
 
 
 class Sort(Application):
+    """
+    Sorts the input.
+    
+    Usage: sort [-r]? [FILE]?
+        - [-r]: Reverses the result of comparisons.
+        - FILE: The name of the file. If not specified, uses stdin.
+    """
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Sorts the input in order
+        Executes the sort command
 
         Parameters:
             args (List[str]): Arguments to be passed

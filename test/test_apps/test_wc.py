@@ -8,6 +8,7 @@ from error import FileError, FlagError
 
 
 class TestWc(unittest.TestCase):
+    @classmethod
     def setup(self, contents):
         self.test_dir = tempfile.TemporaryDirectory()
         self.temp_path = Path(self.test_dir.name)
@@ -17,6 +18,7 @@ class TestWc(unittest.TestCase):
             with open(self.test_file[i], "w") as f:
                 f.write(contents[i])
 
+    @classmethod
     def teardown(self):
         self.test_dir.cleanup()
 

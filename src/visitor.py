@@ -65,8 +65,10 @@ class Visitor(ParseTreeVisitor):
             index = 1
         if ctx.getChild(0).getText() == "<":
             self.input_io.append(ctx.getChild(index).getText())
+        elif ctx.getChild(0).getText() == ">":
+            self.output_io.append([ctx.getChild(index).getText(), "w"])
         else:
-            self.output_io.append(ctx.getChild(index).getText())
+            self.output_io.append([ctx.getChild(index).getText(), "a"])
 
     def visitArgument(self, ctx: Comp0010ShellParser.ArgumentContext):
         """

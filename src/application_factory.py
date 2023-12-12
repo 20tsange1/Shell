@@ -1,4 +1,5 @@
 from unsafe_decorator import UnsafeDecorator
+from help_decorator import HelpDecorator
 from apps.pwd import Pwd
 from apps.cd import Cd
 from apps.echo import Echo
@@ -22,36 +23,39 @@ from apps.font import Font
 from apps.sed import Sed
 from apps.wc import Wc
 from apps.exit import Exit
+from apps.help import Help
 
 
 class ApplicationFactory:
-    def __init__(self, unsafe=True):
+    def __init__(self, helpful=True, unsafe=True):
         self.application_map = {
-            "pwd": Pwd(),
-            "cd": Cd(),
-            "echo": Echo(),
-            "ls": Ls(),
             "cat": Cat(),
-            "head": Head(),
-            "tail": Tail(),
-            "grep": Grep(),
-            "sort": Sort(),
-            "cut": Cut(),
-            "find": Find(),
-            "uniq": Uniq(),
-            "mkdir": Mkdir(),
-            "touch": Touch(),
-            "rm": Rm(),
-            "rmdir": Rmdir(),
-            "mv": Mv(),
-            "cp": Cp(),
+            "cd": Cd(),
             "color": Color(),
-            "font": Font(),
-            "sed": Sed(),
-            "wc": Wc(),
+            "cp": Cp(),
+            "cut": Cut(),
+            "echo": Echo(),
             "exit": Exit(),
+            "find": Find(),
+            "font": Font(),
+            "grep": Grep(),
+            "head": Head(),
+            "ls": Ls(),
+            "mkdir": Mkdir(),
+            "mv": Mv(),
+            "pwd": Pwd(),
+            "remove": Rm(),
+            "rmdir": Rmdir(),
+            "sed": Sed(),
+            "sort": Sort(),
+            "tail": Tail(),
+            "touch": Touch(),
+            "uniq": Uniq(),
+            "wc": Wc(),
         }
         # add unsafe commands to map
+        if helpful:
+            self.add_helpful_applications()
         if unsafe:
             self.add_unsafe_applications()
 
@@ -60,3 +64,8 @@ class ApplicationFactory:
         for name, app in self.application_map.items():
             unsafe[f"_{name}"] = UnsafeDecorator(app)
         self.application_map.update(unsafe)
+    
+    def add_helpful_applications(self):
+        for name in self.application_map.keys():
+            self.application_map[name] = HelpDecorator(self.application_map[name])
+        self.application_map["help"] = Help()

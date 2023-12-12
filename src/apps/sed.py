@@ -6,9 +6,20 @@ from application import Application
 
 
 class Sed(Application):
+    """
+    Replaces a string with another string in a file
+    
+    Usage: sed [ARG] [FILE]
+        - ARG: s/pattern/replacement_string/[g]?
+            - [s]: Substitute
+            - [pattern]: Regular expression pattern to be matched
+            - [replacement_string]: String to be replaced with
+            - [g]: Global flag to replace all occurrences
+        - FILE: File to be modified
+    """
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Replaces a string with another string in a file
+        Executes the sed command
 
         Parameters:
             args (List[str]): Arguments to be passed

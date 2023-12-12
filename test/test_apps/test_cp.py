@@ -7,15 +7,18 @@ from error import DirectoryError, FileError, ArgumentError, FlagError
 
 
 class TestCp(unittest.TestCase):
+    @classmethod
     def setup(self):
         self.test_dir = tempfile.TemporaryDirectory()
         os.chdir(self.test_dir.name)
         return []
 
+    @classmethod
     def create_file(self, filename, content=""):
         with open(filename, "w") as f:
             f.write(content)
 
+    @classmethod
     def create_directory(self, dirname, contents=None):
         os.makedirs(dirname)
         if contents:
@@ -26,6 +29,7 @@ class TestCp(unittest.TestCase):
                 with open(content_path, "w") as f:
                     f.write("")
 
+    @classmethod
     def teardown(self):
         self.test_dir.cleanup()
 

@@ -5,7 +5,14 @@ from application import Application
 
 
 class Rmdir(Application):
-    def is_directory_empty(self, path: str) -> bool:
+    """
+    Removes a directory and its contents.
+    
+    Usage: rmdir [DIR]
+        - DIR: The path of the directory to remove.
+    """
+    @staticmethod
+    def is_directory_empty(path: str) -> bool:
         """
         Check if a directory is empty
 
@@ -17,7 +24,8 @@ class Rmdir(Application):
         """
         return not os.listdir(path)
 
-    def recursive_remove(self, path: str) -> None:
+    @staticmethod
+    def recursive_remove(path: str) -> None:
         """
         Recursively remove all files and directories within a directory
 
@@ -34,7 +42,7 @@ class Rmdir(Application):
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Removes a directory
+        Executes the rmdir command
 
         Parameters:
             args (List[str]): Arguments to be passed

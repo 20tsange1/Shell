@@ -1,15 +1,16 @@
 import sys
-from error import ArgumentError
+from error import ArgumentError, ApplicationError
 from typing import List
 
 
 class Application:
     def execute(
         self, args: List[str], out: List[str]
-    ) -> None:  # pragma: no cover
-        pass
+    ) -> None:
+        raise ApplicationError("Calling parent class execute method")
 
-    def stdin_check(self) -> List[str]:
+    @staticmethod
+    def stdin_check() -> List[str]:
         """
         Stdin handling with exception
 

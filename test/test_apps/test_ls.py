@@ -8,6 +8,7 @@ from error import ArgumentError, DirectoryError
 
 
 class TestLs(unittest.TestCase):
+    @classmethod
     def setup(self, contents=None):
         self.test_dir = tempfile.TemporaryDirectory()
         self.temp_path = Path(self.test_dir.name)
@@ -17,6 +18,7 @@ class TestLs(unittest.TestCase):
         os.chdir(self.temp_path)
         return []
 
+    @classmethod
     def teardown(self):
         self.test_dir.cleanup()
 

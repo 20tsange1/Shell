@@ -6,9 +6,15 @@ from application import Application
 
 
 class Ls(Application):
+    """
+    Lists files in current directory.
+    
+    Usage: ls [DIR]?
+        - DIR: The directory to list. If not specified, uses the current directory.
+    """
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Lists files in current directory
+        Executes the ls command
 
         Parameters:
             args (List[str]): Arguments to be passed

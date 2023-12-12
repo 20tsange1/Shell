@@ -3,9 +3,15 @@ from application import Application
 
 
 class Echo(Application):
+    """
+    Repeats the arguments to stdout.
+
+    echo [ARG]...
+        - ARG: Arguments to be printed to stdout. When no arguments are presented, stdin is used.
+    """
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Writes arguments passed to stdout
+        Executes the echo command
 
         Parameters:
             args (List[str]): Arguments to be repeated by function

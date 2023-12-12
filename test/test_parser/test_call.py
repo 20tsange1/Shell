@@ -4,6 +4,7 @@ from pathlib import Path
 from call import Call
 import io
 from error import RedirectError, ApplicationError
+from hypothesis import given, strategies as st
 
 
 class TestVisitor(unittest.TestCase):
@@ -48,9 +49,16 @@ class TestVisitor(unittest.TestCase):
 
     def test_redirect_stdout(self):
         out = self.setup([""])
-        Call(["echo", "Foo", "Bar"], [], [self.test_file[0]], [out])
+        Call(["echo", "Foo", "Bar"], [], [[self.test_file[0], "w"]], [out])
         with open(self.test_file[0], "r") as f:
             self.assertEqual("Foo Bar\n", f.read())
+        self.teardown()
+
+    def test_redirect_stdout_append(self):
+        out = self.setup(["Hello\n"])
+        Call(["echo", "Foo", "Bar"], [], [[self.test_file[0], "a"]], [out])
+        with open(self.test_file[0], "r") as f:
+            self.assertEqual("Hello\nFoo Bar\n", f.read())
         self.teardown()
 
     def test_redirect_too_many(self):
@@ -71,4 +79,14 @@ class TestVisitor(unittest.TestCase):
         )
         with self.assertRaises(RedirectError):
             Call(["uniq"], ["nonexistent_file"], [], [out])
+        self.teardown()
+
+    # For all unknown strings, application should raise an error
+    @given(
+        st.text(min_size=1),
+    )
+    def test_call_unsupported_hypothesis(self, application):
+        out = self.setup([])
+        with self.assertRaises(ApplicationError):
+            Call([application], [], [], [out], None)
         self.teardown()

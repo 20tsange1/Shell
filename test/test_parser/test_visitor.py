@@ -49,6 +49,13 @@ class TestVisitor(unittest.TestCase):
             self.assertEqual("foo\n", f.read())
         self.teardown()
 
+    def test_redirection_stdout_append(self):
+        out = self.setup(["ABCDEFFEDCBA\nABCDDCBA\n"])
+        parse("echo ABCD >> " + self.test_file[0], out)
+        with open(self.test_file[0], "r") as f:
+            self.assertEqual("ABCDEFFEDCBA\nABCDDCBA\nABCD\n", f.read())
+        self.teardown()
+
     def test_pipe(self):
         out = self.setup([])
         parse("echo foo | cat", out)

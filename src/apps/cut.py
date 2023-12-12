@@ -4,7 +4,18 @@ from application import Application
 
 
 class Cut(Application):
-    def define_ranges(self, byte_ranges: List[str]) -> List[str]:
+    """
+    Cuts out sections from each line of a given file or stdin and prints the result to stdout.
+
+    Usage: cut [OPTION] [FILE]
+        - OPTION: Specifies the bytes to extract from each line:
+            - [-b 1,2,3]: extracts 1st, 2nd and 3rd bytes.
+            - [-b 1-3,5-7]: extracts the bytes from 1st to 3rd and from 5th to 7th.
+            - [-b -3,5-]: extracts the bytes from the beginning of line to 3rd, and from 5th to the end of line.
+        - FILE: A name of a file. If not specified, uses stdin.
+    """
+    @staticmethod
+    def define_ranges(byte_ranges: List[str]) -> List[str]:
         """
         Splits and defines the ranges for cut
 
@@ -50,7 +61,7 @@ class Cut(Application):
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Extracts bytes from an input
+        Executes the cut command
 
         Parameters:
             args (List[str]): Arguments to be passed

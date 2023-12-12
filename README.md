@@ -139,7 +139,7 @@ Exits the shell, ending the process.
 
 Recursively searches for files with matching names. Outputs the list of relative paths, each followed by a newline.
 
-    find [PATH] -name PATTERN
+    find [PATH]? -name PATTERN
 
 - `PATTERN` is a file name with some parts replaced with `*` (asterisk).
 - `PATH` is the root directory for search. If not specified, uses the current directory.

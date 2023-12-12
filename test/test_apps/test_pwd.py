@@ -6,12 +6,14 @@ from apps.pwd import Pwd
 
 
 class TestPwd(unittest.TestCase):
+    @classmethod
     def setup(self):
         self.test_dir = tempfile.TemporaryDirectory()
         self.temp_path = Path(self.test_dir.name)
         os.chdir(self.temp_path)
         return []
 
+    @classmethod
     def teardown(self):
         self.test_dir.cleanup()
 

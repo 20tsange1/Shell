@@ -5,9 +5,16 @@ from application import Application
 
 
 class Grep(Application):
+    """
+    Matches a pattern in the files provided.
+    
+    Usage: grep [PATTERN] [FILE]...
+        - PATTERN: A regular expression to be matched.
+        - FILE(s): Name(s) of the file(s) to be searched. If not specified, uses stdin.
+    """
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Matches a pattern in the files provided
+        Executes the grep command
 
         Parameters:
             args (List[str]): Arguments to be passed

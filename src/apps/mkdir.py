@@ -5,9 +5,15 @@ from application import Application
 
 
 class Mkdir(Application):
+    """
+    Creates a directory.
+    
+    Usage: mkdir [DIR]
+        - DIR: The name of the directory to create.
+    """
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Creates a directory
+        Executes the mkdir command
 
         Parameters:
             args (List[str]): Arguments to be passed

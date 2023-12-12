@@ -5,8 +5,19 @@ from error import ArgumentError, FlagError, DirectoryError, FileError
 
 
 class Cp(Application):
+    """
+    Copies a file/directory from a source to a destination.
+
+    Usage: cp [OPTION] [SOURCE] [DESTINATION]
+        - OPTION: Specifies the behaviour of cp:
+            - [-f]: forces a file to be overwritten.
+            - [-r]: performs a recursive copy for directories (All subfiles and subdirectories copied).
+        - SOURCE: Specifies the file/directory to be copied.
+        - DESTINATION: Specifies the output file/directory.
+    """
+    @staticmethod
     def copy_file(
-        self, source: str, destination: str, force: bool, recursive: bool
+        source: str, destination: str, force: bool, recursive: bool
     ) -> None:
         """
         Checks whether desired destination exists and copies file
@@ -58,7 +69,7 @@ class Cp(Application):
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Copies a file
+        Executes the cp command
 
         Parameters:
             args (List[str]): Arguments to be passed

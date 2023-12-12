@@ -5,7 +5,18 @@ from error import FileError, FlagError
 
 
 class Wc(Application):
-    def parse_arguments(self, args: List[str]) -> Tuple[List[str], List[str]]:
+    """
+    Counts the number of lines, words, and characters in a file or stdin.
+    
+    Usage: wc [OPTION] [FILE]?
+        - [OPTION]: The flags to be passed. If not specified, returns all three counts.
+            - [-l]: Returns the number of lines.
+            - [-w]: Returns the number of words.
+            - [-m]: Returns the number of characters.
+        - [FILE]: The name of the file. If not specified, uses stdin.
+    """
+    @staticmethod
+    def parse_arguments(args: List[str]) -> Tuple[List[str], List[str]]:
         """
         Parses command-line arguments into flags and file paths
 
@@ -24,7 +35,8 @@ class Wc(Application):
                 file_paths.append(arg)
         return flags, file_paths
 
-    def count(self, lines: List[str]) -> Tuple[int, int, int]:
+    @staticmethod
+    def count(lines: List[str]) -> Tuple[int, int, int]:
         """
         Counts the number of lines, words, and characters in a list of strings
 
@@ -39,8 +51,8 @@ class Wc(Application):
         num_chars = sum(len(line) for line in lines)
         return num_lines, num_words, num_chars
 
+    @staticmethod
     def handle_flags(
-        self,
         flags: List[str],
         num_lines: int,
         num_words: int,
@@ -74,7 +86,7 @@ class Wc(Application):
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Counts the number of lines, words, and characters in a file
+        Executes the wc command
 
         Parameters:
             args (List[str]): Arguments to be passed
