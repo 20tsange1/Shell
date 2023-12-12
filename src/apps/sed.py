@@ -27,7 +27,8 @@ class Sed(Application):
             out (List[str]): Output for stdout.
 
         Exceptions:
-            ArgumentError: If invalid (regex) or wrong number of arguments passed.
+            ArgumentError: If invalid (regex) or wrong \
+number of arguments passed.
         """
         if len(args) > 2 or len(args) == 0:
             raise ArgumentError("Wrong number of command line arguments")

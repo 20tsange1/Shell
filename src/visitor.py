@@ -13,30 +13,35 @@ from typing import List
 class Visitor(ParseTreeVisitor):
     """
     Visitor class to traverse the parse tree.
-    
+
     Attributes:
-        app_list (deque): Application list, commands and arguments to be executed.
-        output (deque): Output array, for storing execution outputs to be passed to stdout.
+        app_list (deque): Application list, commands \
+and arguments to be executed.
+        output (deque): Output array, for storing \
+execution outputs to be passed to stdout.
         input_io (List[str]): Input file paths.
         output_io (List[str]): Output file paths.
-    
+
     Methods:
         visitCall (CallContext, List[str]): Visits the call node.
         visitPipe (PipeContext): Visits the pipe node.
         visitRedirection (RedirectionContext): Visits the redirection node.
         visitArgument (ArgumentContext): Visits the argument node.
         visitQuoted (QuotedContext): Visits the quoted node.
-        
+
     Inherits:
         ParseTreeVisitor: Visitor class for parse trees.
     """
+
     def __init__(self) -> None:
         self.app_list = deque([])
         self.output = deque([])
         self.input_io = []
         self.output_io = []
 
-    def visitCall(self, ctx: Comp0010ShellParser.CallContext, pipe=None) -> None:
+    def visitCall(
+        self, ctx: Comp0010ShellParser.CallContext, pipe=None
+    ) -> None:
         """
         Visits Call Node
             - Visits all children
@@ -70,7 +75,9 @@ class Visitor(ParseTreeVisitor):
         self.visit(ctx.getChild(0))
         self.visitCall(ctx.getChild(2), self.output.pop())
 
-    def visitRedirection(self, ctx: Comp0010ShellParser.RedirectionContext) -> None:
+    def visitRedirection(
+        self, ctx: Comp0010ShellParser.RedirectionContext
+    ) -> None:
         """
         Visits Redirection Node
 

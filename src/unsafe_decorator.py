@@ -5,16 +5,17 @@ from typing import List
 class UnsafeDecorator(Application):
     """
     Decorator for adding exception handling to applications.
-    
+
     Attributes:
         wrapped_application (Application): Application to be decorated.
-        
+
     Methods:
         execute (List[str], List[str]): Executes the application.
-        
+
     Implements:
         Application: Interface for all applications.
     """
+
     def __init__(self, wrapped_application: Application) -> None:
         self.wrapped_application = wrapped_application
 

@@ -29,7 +29,7 @@ from apps.help import Help
 class ApplicationFactory:
     """
     Factory Design Pattern for creating applications.
-    
+
     Attributes:
         application_map (Dict[str, Application]): Maps the name of \
 the application to the application object.
@@ -38,6 +38,7 @@ the application to the application object.
         add_unsafe_applications: Adds unsafe applications to the map.
         add_helpful_applications: Adds helpful applications to the map.
     """
+
     def __init__(self, helpful: bool = True, unsafe: bool = True) -> None:
         self.application_map = {
             "cat": Cat(),

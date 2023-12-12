@@ -45,7 +45,7 @@ class Uniq(Application):
 
         Returns:
             (List[str]): Returns list with matching adjacent lines removed.
-        
+
         Exceptions:
             FileError: If file does not exist.
         """

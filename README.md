@@ -15,9 +15,10 @@ Written in 2023, for Professor Sergey Mechtaev.
 ## Table of Contents
 
 - Executing & Testing Shell
-- Application Descriptions
-- UML Diagram
+- Convenience Features
 - Testing
+- UML Diagram
+- Application Descriptions
 
 ## Executing & Testing Shell
 
@@ -69,10 +70,53 @@ Individual system tests (e.g. `test_cat`) can be executed as
 
     python3 system_test/tests.py -v TestShell.test_cat
 
+## Convenience Features
+
+Our implementation of the Shell contains a variety of convenience features to ensure ease of use and accessibility. Aside from application-related convenience features, such as `color`, we have also implemented autocompleting commands, command input history, and command help features.
+
+Autocompleting commands can be done by pressing `TAB`, command input history can be checked by pressing the `UP` arrow, and using the `-h` / `--help` flag after any application command will output more information about it.
+
+## Testing
+
+Our version of the COMP0010 Shell has unit, property-based, and mutation testing mechanisms. Test cases were made for all scenarios in all files that were written by us, where appropriate. This includes all of the applications, as well as the application_factory, application, call, error, help_decorator, shell, unsafe_decorator, and visitor.
+
+### Unit Testing
+
+Unit testing is a software testing method by which individual units of source code are tested to determine whether they are fit for use. Our Shell implementation incorporates unit testing via that Unittest module.
+
+All reasonable aspects of our code were tested, as shown by the coverage report. Code that was not feasible to be tested, such as ANTLR files, were specifically excluded not unit tested and thus excluded from the coverage report.
+
+### Property-based Testing
+
+Property-based testing checks that a function abides by a certain property that exists inherently. This is done by comparing the output with invariants that must be followed by the function, regardless of the specific output. Our Shell implementation incorporates property-based testing via the Hypothesis module.
+
+Property-based testing was used where appropriate; functions that had clear invariants and specific edge cases were all thoroughly tested. 
+
+### Mutation Testing
+
+Mutation testing, also known as code mutation testing, is a form of white box testing in which specific components of an application's source code are changed to ensure a software test suite can detect the changes. Our Shell implementation incorporates mutation testing via the Mutatest module.
+
+Though all unit and property-based tests pass (as they should), some mutation tests are expected to fail. For example, in mv, the length of args is always 2. Due to this, the mutation args[i + 1] to args[i - 1] will yield the same output.
+
+```python
+for i in range(0, len(args), 2):
+    source = args[i]
+    destination = args[i + 1] -> args[i - 1]
+    self.move_file(source, destination, force)
+```
+
+This occurs in a few different applications and has been dimissed accordingly.
+
+## UML Diagram
+
+![](https://github.com/comp0010/comp0010-shell-python-p3/blob/master/UML_Diagram_Shell.png)
+
 ## Applications
+
 In our version of the COMP0010 Shell, we have implemented the following applications below:
 
 ### help
+
 Displays a description of the commands available and syntax to follow.
 
     help
@@ -300,26 +344,3 @@ Counts the number of lines, words, and characters in a file/stdin.
 ### Unsafe applications
 
 In COMP0010 Shell, each application has an unsafe variant. An unsafe version of an application is an application that has the same semantics as the original application, but instead of raising exceptions, it prints the error message to its stdout. This feature can be used to prevent long sequences from terminating early when some intermediate commands fail. The names of unsafe applications are prefixed with `_`, e.g. `_ls` and `_grep`.
-
-## UML Diagram
-
-![](https://github.com/comp0010/comp0010-shell-python-p3/blob/master/UML_Diagram_Shell.png)
-
-## Testing
-
-Our version of the COMP0010 Shell has unit, property-based, and mutation testing mechanisms. Test cases were made for all scenarios in all files that were written by us, where appropriate. This includes all of the applications, as well as the application_factory, application, call, error, help_decorator, shell, unsafe_decorator, and visitor.
-
-## Mutation Testing
-
-Mutation testing, also known as code mutation testing, is a form of white box testing in which specific components of an application's source code are changed to ensure a software test suite can detect the changes. Our Shell implementation incorporates mutation testing via the Mutatest module.
-
-Though all unit and property-based tests pass (as they should), some mutation tests are expected to fail. For example, in mv, the length of args is always 2. Due to this, the mutation args[i + 1] to args[i - 1] will yield the same output.
-
-```python
-for i in range(0, len(args), 2):
-    source = args[i]
-    destination = args[i + 1] -> args[i - 1]
-    self.move_file(source, destination, force)
-```
-
-This occurs in a few different applications and has been dimissed accordingly.

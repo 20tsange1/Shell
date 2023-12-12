@@ -13,7 +13,7 @@ class Exit(Application):
     def execute(self, args: List[str] = None, out: List[str] = None) -> None:
         """
         Executes the exit command.
-        
+
         Parameters:
             args (List[str]): Arguments to be passed.
             out (List[str]): Output for stdout.

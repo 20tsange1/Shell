@@ -6,14 +6,15 @@ from typing import List
 class Application:
     """
     Interface for all applications.
-    
+
     Methods:
         execute (List[str], List[str]): Executes the application.
         stdin_check (): Checks for stdin.
-    
+
     Exceptions:
         ApplicationError: If parent class execute method is called.
     """
+
     def execute(self, args: List[str], out: List[str]) -> None:
         raise ApplicationError("Calling parent class execute method")
 

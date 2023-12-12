@@ -7,11 +7,13 @@ from typing import List, IO
 class Call:
     """
     Class to handle the execution of applications.
-    
+
     Methods:
         eval (List[str], List[str]): Evaluates the given commands.
-        redirect (str, List[str], List[str], List[str], IO): Performs input/output redirection.
+        redirect (str, List[str], List[str], List[str], IO): \
+Performs input/output redirection.
     """
+
     def __init__(
         self,
         app: str,
