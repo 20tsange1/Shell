@@ -14,14 +14,16 @@ class Rm(Application):
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Executes the rm command
+        Executes the rm command.
 
         Parameters:
-            args (List[str]): Arguments to be passed
+            args (List[str]): Arguments to be passed.
+            out (List[str]): Output for stdout.
 
         Exceptions:
-            ArgumentError: If wrong number of arguments passed
-            FileError: If file does not exist
+            ArgumentError: If wrong number of arguments passed.
+            DirectoryError: If directory is passed.
+            FileError: If file does not exist.
         """
         if len(args) != 1:
             raise ArgumentError("Wrong number of command line arguments")

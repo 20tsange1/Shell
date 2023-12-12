@@ -15,15 +15,15 @@ the following:
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Changes the curent font
+        Changes the curent font.
 
         Parameters:
-            args (List[str]): Arguments to be passed
-            out (List[str]): Output for stdout
+            args (List[str]): Arguments to be passed.
+            out (List[str]): Output for stdout.
 
         Exceptions:
-            ArgumentError: If wrong number of arguments passed
-            FlagError: If wrong flags passed
+            ArgumentError: If wrong number of arguments passed.
+            FlagError: If wrong flags passed.
         """
         fonts = {
             "bold": "\033[1m",

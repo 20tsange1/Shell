@@ -22,16 +22,17 @@ directories (All subfiles and subdirectories copied).
         source: str, destination: str, force: bool, recursive: bool
     ) -> None:
         """
-        Checks whether desired destination exists and copies file
+        Checks whether desired destination exists and copies file.
 
         Parameters:
-            source (str): Source file or pattern
-            destination (str): Destination directory
-            force (bool): force overwrite
-            recursive (bool): copy directories recursively
+            source (str): Source file or pattern.
+            destination (str): Destination directory.
+            force (bool): force overwrite.
+            recursive (bool): copy directories recursively.
 
         Exceptions:
-            FileNotFoundError: If source file does not exist
+            FileError: Invalid file passed.
+            DirectoryError: Invalid directory passed.
         """
         if os.path.isfile(source):
             dest_file = destination
@@ -74,14 +75,15 @@ directories (All subfiles and subdirectories copied).
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Executes the cp command
+        Executes the cp command.
 
         Parameters:
-            args (List[str]): Arguments to be passed
-            out (List[str]): Output for stdout
+            args (List[str]): Arguments to be passed.
+            out (List[str]): Output for stdout.
 
         Exceptions:
-            ArgumentError: If wrong number of arguments passed
+            ArgumentError: If wrong number of arguments passed.
+            FlagError: If wrong flags are passed.
         """
         if len(args) < 2 or len(args) > 3:
             raise ArgumentError(

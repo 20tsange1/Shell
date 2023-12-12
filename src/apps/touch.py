@@ -14,10 +14,11 @@ class Touch(Application):
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Executes the touch command
+        Executes the touch command.
 
         Parameters:
             args (List[str]): Arguments to be passed.
+            out (List[str]): Output for stdout.
 
         Exceptions:
             ArgumentError: If wrong number of arguments passed.

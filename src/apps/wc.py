@@ -20,13 +20,13 @@ returns all three counts.
     @staticmethod
     def parse_arguments(args: List[str]) -> Tuple[List[str], List[str]]:
         """
-        Parses command-line arguments into flags and file paths
+        Parses command-line arguments into flags and file paths.
 
         Parameters:
-            args (List[str]): Command-line arguments
+            args (List[str]): Command-line arguments.
 
         Returns:
-            Tuple[List[str], List[str]]: Lists of flags and file paths
+            Tuple[List[str], List[str]]: Lists of flags and file paths.
         """
         flags = []
         file_paths = []
@@ -40,13 +40,13 @@ returns all three counts.
     @staticmethod
     def count(lines: List[str]) -> Tuple[int, int, int]:
         """
-        Counts the number of lines, words, and characters in a list of strings
+        Counts the number of lines, words, and characters in a list of strings.
 
         Parameters:
-            lines (List[str]): List of strings representing lines of text
+            lines (List[str]): List of strings representing lines of text.
 
         Returns:
-            Tuple[int, int, int]: Count of lines, words, and characters
+            Tuple[int, int, int]: Count of lines, words, and characters.
         """
         num_lines = len(lines)
         num_words = sum(len(line.split()) for line in lines)
@@ -62,17 +62,17 @@ returns all three counts.
         out: List[str],
     ) -> None:
         """
-        Handles specified flags and appends corresponding output
+        Handles specified flags and appends corresponding output.
 
         Parameters:
-            flags (List[str]): List of flags to be processed
-            num_lines (int): Number of lines
-            num_words (int): Number of words
-            num_chars (int): Number of characters
-            out (List[str]): List to which the output will be appended
+            flags (List[str]): List of flags to be processed.
+            num_lines (int): Number of lines.
+            num_words (int): Number of words.
+            num_chars (int): Number of characters.
+            out (List[str]): List to which the output will be appended.
 
         Exceptions:
-            ValueError: If an invalid flag is passed
+            FlagError: If an invalid flag is passed.
         """
         if not flags:
             out += [f"{num_lines}\n", f"{num_words}\n", f"{num_chars}\n"]
@@ -88,14 +88,14 @@ returns all three counts.
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Executes the wc command
+        Executes the wc command.
 
         Parameters:
-            args (List[str]): Arguments to be passed
+            args (List[str]): Arguments to be passed.
+            out (List[str]): Output for stdout.
 
         Exceptions:
-            ArgumentError: If wrong number of arguments passed
-            FileNotFoundError: If file does not exist
+            FlagError: If wrong flags passed.
         """
         flags, file_paths = self.parse_arguments(args)
         if not file_paths:

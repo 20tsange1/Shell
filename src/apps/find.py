@@ -20,14 +20,14 @@ uses the current directory.
         self, dire: str, prev: str, pattern: str, found: List[str], flag: bool
     ) -> None:
         """
-        Finds paths which match the pattern
+        Finds paths which match the pattern.
 
         Parameters:
-            dire (str): Current directory
-            prev (str): Previous output directory
-            pattern (str): Pattern to be matched
-            found (List[str]): Output array for matched paths
-            flag (bool): Flag for if it has been matched previously
+            dire (str): Current directory.
+            prev (str): Previous output directory.
+            pattern (str): Pattern to be matched.
+            found (List[str]): Output array for matched paths.
+            flag (bool): Flag for if it has been matched previously.
         """
         if os.path.isdir(dire):
             if flag:
@@ -64,16 +64,16 @@ uses the current directory.
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Executes the find command
+        Executes the find command.
 
         Parameters:
-            args (List[str]): Arguments to be passed
-            out (List[str]): Output for stdout
+            args (List[str]): Arguments to be passed.
+            out (List[str]): Output for stdout.
 
         Exceptions:
-            ArgumentError: If wrong number of arguments passed
-            FlagError: If wrong flags passed
-            FileError: If file does not exist
+            ArgumentError: If wrong number of arguments passed.
+            FlagError: If wrong flags passed.
+            DirectoryError: If directory does not exist.
         """
         if len(args) == 0 or len(args) > 3:
             raise ArgumentError(

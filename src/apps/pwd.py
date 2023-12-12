@@ -12,10 +12,10 @@ class Pwd(Application):
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Executes the pwd command
+        Executes the pwd command.
 
         Parameters:
-            args (List[str]): Arguments to be passed
-            out (List[str]): Output for stdout
+            args (List[str]): Arguments to be passed.
+            out (List[str]): Output for stdout.
         """
         out.append(os.getcwd() + "\n")

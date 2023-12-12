@@ -15,14 +15,14 @@ class Uniq(Application):
     @staticmethod
     def return_uniq(lines: List[str], ignore_case: bool) -> List[str]:
         """
-        Returns a list with non-match adjacent lines
+        Returns a list with non-match adjacent lines.
 
         Parameters:
-            lines (List[str]): Lines to be checked
-            ignore_case (List[str]): Flag for whether case is ignored
+            lines (List[str]): Lines to be checked.
+            ignore_case (List[str]): Flag for whether case is ignored.
 
         Returns:
-            (List[str]): Returns list with non-unique adjacent lines removed
+            (List[str]): Returns list with non-unique adjacent lines removed.
         """
         return_text = [lines[0].strip("\n")]
         for i in range(1, len(lines)):
@@ -37,14 +37,17 @@ class Uniq(Application):
 
     def unique_file(self, file_name: str, ignore_case: bool) -> List[str]:
         """
-        File handling for uniq
+        File handling for uniq.
 
         Parameters:
-            file_name (str): File to be handled
-            ignore_case (bool): Flag for whether case is ignored
+            file_name (str): File to be handled.
+            ignore_case (bool): Flag for whether case is ignored.
 
         Returns:
-            (List[str]): Returns list with matching adjacent lines removed
+            (List[str]): Returns list with matching adjacent lines removed.
+        
+        Exceptions:
+            FileError: If file does not exist.
         """
         try:
             with open(file_name, "r") as file:
@@ -55,29 +58,29 @@ class Uniq(Application):
 
     def unique_stdin(self, ignore_case: bool) -> List[str]:
         """
-        Stdin handling for uniq
+        Stdin handling for uniq.
 
         Parameters:
-            ignore_case (bool): Flag for whether case is ignored
+            ignore_case (bool): Flag for whether case is ignored.
 
         Returns:
-            (List[str]): Returns list with matching adjacent lines removed
+            (List[str]): Returns list with matching adjacent lines removed.
         """
         lines = self.stdin_check()
         return self.return_uniq(lines, ignore_case)
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Executes the uniq command
+        Executes the uniq command.
 
         Parameters:
-            args (List[str]): Arguments to be passed
-            out (List[str]): Output for stdout
+            args (List[str]): Arguments to be passed.
+            out (List[str]): Output for stdout.
 
         Exceptions:
-            ArgumentError: If wrong number of arguments passed
-            FlagError: If wrong flags passed
-            FileError: If file does not exist
+            ArgumentError: If wrong number of arguments passed.
+            FlagError: If wrong flags passed.
+            FileError: If file does not exist.
         """
         if len(args) == 0:
             out.extend(self.unique_stdin(False))

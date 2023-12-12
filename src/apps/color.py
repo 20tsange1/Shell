@@ -17,15 +17,15 @@ class Color(Application):
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Executes the color command
+        Executes the color command.
 
         Parameters:
-            args (List[str]): Arguments to be passed
-            out (List[str]): Output for stdout
+            args (List[str]): Arguments to be passed.
+            out (List[str]): Output for stdout.
 
         Exceptions:
-            ArgumentError: If wrong number of arguments passed
-            FlagError: If wrong flags passed
+            ArgumentError: If wrong number of arguments passed.
+            FlagError: If wrong flags passed.
         """
         colours = {
             "grey": "\033[30m",

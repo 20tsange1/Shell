@@ -22,10 +22,10 @@ def parse(cmdline: str) -> List[str]:
     Parses a command line input and returns the execution result.
 
     Parameters:
-        cmdline (str): Command line input
+        cmdline (str): Command line input.
 
     Returns:
-        List[str]: Output deque
+        List[str]: Output deque.
     """
     input_stream = InputStream(io.StringIO(cmdline).read())
     lexer = Comp0010ShellLexer(input_stream)
@@ -42,7 +42,7 @@ def catch_error(cmdline: str) -> None:  # pragma: no cover
     Catches errors for interactive mode.
 
     Parameters:
-        cmdline (str): Command line input
+        cmdline (str): Command line input.
     """
     try:
         out = parse(cmdline)

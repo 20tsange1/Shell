@@ -27,7 +27,18 @@ from apps.help import Help
 
 
 class ApplicationFactory:
-    def __init__(self, helpful=True, unsafe=True):
+    """
+    Factory Design Pattern for creating applications.
+    
+    Attributes:
+        application_map (Dict[str, Application]): Maps the name of \
+the application to the application object.
+
+    Methods:
+        add_unsafe_applications: Adds unsafe applications to the map.
+        add_helpful_applications: Adds helpful applications to the map.
+    """
+    def __init__(self, helpful: bool = True, unsafe: bool = True) -> None:
         self.application_map = {
             "cat": Cat(),
             "cd": Cd(),
@@ -59,13 +70,13 @@ class ApplicationFactory:
         if unsafe:
             self.add_unsafe_applications()
 
-    def add_unsafe_applications(self):
+    def add_unsafe_applications(self) -> None:
         unsafe = {}
         for name, app in self.application_map.items():
             unsafe[f"_{name}"] = UnsafeDecorator(app)
         self.application_map.update(unsafe)
 
-    def add_helpful_applications(self):
+    def add_helpful_applications(self) -> None:
         for name in self.application_map.keys():
             self.application_map[name] = HelpDecorator(
                 self.application_map[name]

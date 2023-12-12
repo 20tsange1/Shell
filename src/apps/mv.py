@@ -18,16 +18,16 @@ class Mv(Application):
     @staticmethod
     def move_file(source: str, destination: str, force: bool) -> None:
         """
-        Checks whether desired destination exists and moves file
+        Checks whether desired destination exists and moves file.
 
         Parameters:
-            source (str): Source file or pattern
-            destination (str): Destination directory
-            force (bool): force overwrite
+            source (str): Source file or pattern.
+            destination (str): Destination directory.
+            force (bool): force overwrite.
 
         Exceptions:
-            FileNotFoundError: If source file does not exist
-            FileExistsError: If destination file already exists
+            FileNotFoundError: If source file does not exist.
+            FileExistsError: If destination file already exists.
         """
         if not os.path.exists(source):
             raise FileError(f"Source file '{source}' does not exist.")
@@ -46,12 +46,14 @@ class Mv(Application):
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Executes the mv command
+        Executes the mv command.
 
         Parameters:
-            args (List[str]): Arguments to be passed
+            args (List[str]): Arguments to be passed.
+            out (List[str]): Output for stdout.
+
         Exceptions:
-            ArgumentError: If wrong number of arguments passed
+            ArgumentError: If wrong number of arguments passed.
         """
         if len(args) < 2 or len(args) > 3:
             raise ArgumentError(

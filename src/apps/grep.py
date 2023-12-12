@@ -16,15 +16,15 @@ If not specified, uses stdin.
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Executes the grep command
+        Executes the grep command.
 
         Parameters:
-            args (List[str]): Arguments to be passed
-            out (List[str]): Output for stdout
+            args (List[str]): Arguments to be passed.
+            out (List[str]): Output for stdout.
 
         Exceptions:
-            ArgumentError: If wrong number of arguments passed
-            FileError: If file does not exist
+            ArgumentError: If wrong number of arguments passed.
+            FileError: If file does not exist.
         """
         if len(args) < 1:
             raise ArgumentError(

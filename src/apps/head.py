@@ -15,16 +15,16 @@ If not specified, returns the first 10 lines.
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Executes the head command
+        Executes the head command.
 
         Parameters:
-            args (List[str]): Arguments to be passed
-            out (List[str]): Output for stdout
+            args (List[str]): Arguments to be passed.
+            out (List[str]): Output for stdout.
 
         Exceptions:
-            ArgumentError: If wrong number of arguments passed
-            FlagError: If wrong flags passed
-            FileError: If file does not exist
+            ArgumentError: If wrong number of arguments passed.
+            FlagError: If wrong flags passed.
+            FileError: If file does not exist.
         """
         file = None
 

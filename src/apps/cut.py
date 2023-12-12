@@ -21,13 +21,13 @@ line to 3rd, and from 5th to the end of line.
     @staticmethod
     def define_ranges(byte_ranges: List[str]) -> List[str]:
         """
-        Splits and defines the ranges for cut
+        Splits and defines the ranges for cut.
 
         Parameters:
-            byte_ranges (List[str]): Initial input arguments
+            byte_ranges (List[str]): Initial input arguments.
 
         Returns:
-            (List[str]): Returns list of ranges
+            (List[str]): Returns list of ranges.
         """
         byte_ranges = byte_ranges.split(",")
 
@@ -65,16 +65,16 @@ line to 3rd, and from 5th to the end of line.
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Executes the cut command
+        Executes the cut command.
 
         Parameters:
-            args (List[str]): Arguments to be passed
-            out (List[str]): Output for stdout
+            args (List[str]): Arguments to be passed.
+            out (List[str]): Output for stdout.
 
         Exceptions:
-            ArgumentError: If wrong number of arguments passed
-            FlagError: If wrong flags passed
-            FileError: If file does not exist
+            ArgumentError: If wrong number of arguments passed.
+            FlagError: If wrong flags passed.
+            FileError: If file does not exist.
         """
         if len(args) == 0 or len(args) > 3:
             raise ArgumentError(

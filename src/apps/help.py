@@ -9,7 +9,14 @@ class Help(Application):
 
     def execute(self, args=None, out=None) -> None:
         """
-        Executes the help command
+        Executes the help command.
+        
+        Parameters:
+            args (List[str]): Arguments to be passed.
+            out (List[str]): Output for stdout.
+        
+        Exceptions:
+            ArgumentError: If wrong number of arguments passed.
         """
         if len(args) > 0:
             raise ArgumentError(

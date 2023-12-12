@@ -5,6 +5,13 @@ from typing import List, IO
 
 
 class Call:
+    """
+    Class to handle the execution of applications.
+    
+    Methods:
+        eval (List[str], List[str]): Evaluates the given commands.
+        redirect (str, List[str], List[str], List[str], IO): Performs input/output redirection.
+    """
     def __init__(
         self,
         app: str,
@@ -17,11 +24,11 @@ class Call:
 
     def eval(self, commands: List[str], out: List[str]) -> None:
         """
-        Evaluate the given commands and execute the corresponding application
+        Evaluate the given commands and execute the corresponding application.
 
         Parameters:
-            commands (List[str]): List of commands
-            out (List[str]): List to which the output will be appended
+            commands (List[str]): List of commands.
+            out (List[str]): List to which the output will be appended.
         """
         application_factory = ApplicationFactory()
         app = commands[0]
@@ -41,17 +48,17 @@ class Call:
         pipe: IO = None,
     ) -> None:
         """
-        Perform input/output redirection for the specified application
+        Perform input/output redirection for the specified application.
 
         Parameters:
-            app (str): Application name
-            inputIO (List[str]): List of input file paths
-            outputIO (List[str]): List of output file paths
-            output (List[str]): List containing the final output
-            pipe (StringIO): Pipe object for input redirection
+            app (str): Application name.
+            inputIO (List[str]): List of input file paths.
+            outputIO (List[str]): List of output file paths.
+            output (List[str]): List containing the final output.
+            pipe (StringIO): Pipe object for input redirection.
 
         Exceptions:
-            RedirectError: If there are invalid redirections
+            RedirectError: If there are invalid redirections.
         """
         if len(inputIO) > 1 or len(outputIO) > 1:
             raise RedirectError("Too many redirections")

@@ -14,14 +14,14 @@ If no files are specified, uses stdin.
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Executes the cat command
+        Executes the cat command.
 
         Parameters:
-            args (List[str]): Arguments (filenames) to be passed
-            out (List[str]): Output for stdout
+            args (List[str]): Arguments (filenames) to be passed.
+            out (List[str]): Output for stdout.
 
         Exceptions:
-            FileError: If file does not exist
+            FileError: If file does not exist.
         """
         if len(args) == 0:
             out.extend(self.stdin_check())

@@ -7,19 +7,36 @@ from call import Call
 from collections import deque
 from error import ArgumentError
 from glob import glob
+from typing import List
 
 
 class Visitor(ParseTreeVisitor):
-    def __init__(self):
-        # Application List, commands and arguments to be executed
+    """
+    Visitor class to traverse the parse tree.
+    
+    Attributes:
+        app_list (deque): Application list, commands and arguments to be executed.
+        output (deque): Output array, for storing execution outputs to be passed to stdout.
+        input_io (List[str]): Input file paths.
+        output_io (List[str]): Output file paths.
+    
+    Methods:
+        visitCall (CallContext, List[str]): Visits the call node.
+        visitPipe (PipeContext): Visits the pipe node.
+        visitRedirection (RedirectionContext): Visits the redirection node.
+        visitArgument (ArgumentContext): Visits the argument node.
+        visitQuoted (QuotedContext): Visits the quoted node.
+        
+    Inherits:
+        ParseTreeVisitor: Visitor class for parse trees.
+    """
+    def __init__(self) -> None:
         self.app_list = deque([])
-        # Output array, for storing execution outputs to be passed to stdout
         self.output = deque([])
         self.input_io = []
         self.output_io = []
 
-    # Visit a parse tree produced by Comp0010ShellParser#call.
-    def visitCall(self, ctx: Comp0010ShellParser.CallContext, pipe=None):
+    def visitCall(self, ctx: Comp0010ShellParser.CallContext, pipe=None) -> None:
         """
         Visits Call Node
             - Visits all children
@@ -43,7 +60,7 @@ class Visitor(ParseTreeVisitor):
             pipe,
         )
 
-    def visitPipe(self, ctx: Comp0010ShellParser.PipeContext):
+    def visitPipe(self, ctx: Comp0010ShellParser.PipeContext) -> None:
         """
         Visits Pipe Node
 
@@ -53,7 +70,7 @@ class Visitor(ParseTreeVisitor):
         self.visit(ctx.getChild(0))
         self.visitCall(ctx.getChild(2), self.output.pop())
 
-    def visitRedirection(self, ctx: Comp0010ShellParser.RedirectionContext):
+    def visitRedirection(self, ctx: Comp0010ShellParser.RedirectionContext) -> None:
         """
         Visits Redirection Node
 
@@ -70,7 +87,7 @@ class Visitor(ParseTreeVisitor):
         else:
             self.output_io.append([ctx.getChild(index).getText(), "a"])
 
-    def visitArgument(self, ctx: Comp0010ShellParser.ArgumentContext):
+    def visitArgument(self, ctx: Comp0010ShellParser.ArgumentContext) -> None:
         """
         Visits Argument Node
 
@@ -105,7 +122,7 @@ class Visitor(ParseTreeVisitor):
         self.app_list[-1].extend(argument)
         return
 
-    def visitQuoted(self, ctx: Comp0010ShellParser.QuotedContext):
+    def visitQuoted(self, ctx: Comp0010ShellParser.QuotedContext) -> List[str]:
         """
         Visits Quoted Node
 

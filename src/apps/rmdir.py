@@ -15,7 +15,7 @@ class Rmdir(Application):
     @staticmethod
     def is_directory_empty(path: str) -> bool:
         """
-        Check if a directory is empty
+        Check if a directory is empty.
 
         Parameters:
             path (str): Path of the directory to check.
@@ -28,7 +28,7 @@ class Rmdir(Application):
     @staticmethod
     def recursive_remove(path: str) -> None:
         """
-        Recursively remove all files and directories within a directory
+        Recursively remove all files and directories within a directory.
 
         Parameters:
             path (str): Path of the directory to remove.
@@ -43,18 +43,16 @@ class Rmdir(Application):
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Executes the rmdir command
+        Executes the rmdir command.
 
         Parameters:
-            args (List[str]): Arguments to be passed
-
-        Returns:
-            None: Returns nothing
+            args (List[str]): Arguments to be passed.
+            out (List[str]): Output for stdout.
 
         Exceptions:
-            ArgumentError: If wrong number of arguments passed
-            FileError: If directory does not exist
-            OSError: If directory is not empty
+            ArgumentError: If wrong number of arguments passed.
+            DirectoryError: If directory does not exist.
+            FlagError: If wrong flags are passed.
         """
         if len(args) != 1 and len(args) != 2:
             raise ArgumentError("Wrong number of command line arguments")

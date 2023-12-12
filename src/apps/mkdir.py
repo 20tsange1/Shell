@@ -14,13 +14,15 @@ class Mkdir(Application):
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Executes the mkdir command
+        Executes the mkdir command.
 
         Parameters:
-            args (List[str]): Arguments to be passed
+            args (List[str]): Arguments to be passed.
+            out (List[str]): Output for stdout.
 
         Exceptions:
-            ArgumentError: If wrong number of arguments passed
+            ArgumentError: If wrong number of arguments passed.
+            DirectoryError: If directory already exists.
         """
         if len(args) != 1:
             raise ArgumentError("Wrong number of command line arguments")

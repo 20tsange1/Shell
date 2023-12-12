@@ -1,5 +1,6 @@
 import sys
 from application import Application
+from typing import List
 
 
 class Exit(Application):
@@ -9,9 +10,13 @@ class Exit(Application):
     Usage: exit
     """
 
-    def execute(self, args=None, out=None) -> None:
+    def execute(self, args: List[str] = None, out: List[str] = None) -> None:
         """
-        Executes the exit command
+        Executes the exit command.
+        
+        Parameters:
+            args (List[str]): Arguments to be passed.
+            out (List[str]): Output for stdout.
         """
         print("Exiting shell. Goodbye! 👋")
         sys.exit()

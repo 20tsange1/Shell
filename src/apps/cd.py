@@ -14,15 +14,15 @@ class Cd(Application):
 
     def execute(self, args: List[str], out: List[str]) -> None:
         """
-        Executes the cd command
+        Executes the cd command.
 
         Parameters:
-            args (List[str]): Arguments to be passed
-            out (List[str]): Output for stdout
+            args (List[str]): Arguments to be passed.
+            out (List[str]): Output for stdout.
 
         Exceptions:
-            ArgumentError: If wrong number of arguments passed
-            FileError: If directory does not exist
+            ArgumentError: If wrong number of arguments passed.
+            DirectoryError: If directory does not exist.
         """
         if len(args) == 0 or len(args) > 1:
             raise ArgumentError(
