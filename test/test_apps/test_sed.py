@@ -31,8 +31,7 @@ class TestSed(unittest.TestCase):
         out = self.setup(["Hello, World!"])
         Sed().execute(["s/World/Universe/", self.test_file[0]], out)
         self.assertEqual(
-            expected_output,
-            self.read_file_content(self.test_file[0])
+            expected_output, self.read_file_content(self.test_file[0])
         )
         self.teardown()
 
@@ -59,8 +58,7 @@ class TestSed(unittest.TestCase):
         expected_output = "Hello, Universe! Universe!"
         Sed().execute(["s/World/Universe/g", self.test_file[0]], out)
         self.assertEqual(
-            expected_output,
-            self.read_file_content(self.test_file[0])
+            expected_output, self.read_file_content(self.test_file[0])
         )
         self.teardown()
 

@@ -9,11 +9,13 @@ from application import Application
 class Find(Application):
     """
     Finds all paths where the pattern is matched.
-    
+
     Usage: find [DIR]? -name [PATTERN]
-        - DIR: A directory to search in. If not specified, uses the current directory.
+        - DIR: A directory to search in. If not specified, \
+uses the current directory.
         - PATTERN: The pattern to be matched.
     """
+
     def find(
         self, dire: str, prev: str, pattern: str, found: List[str], flag: bool
     ) -> None:

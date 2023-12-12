@@ -11,6 +11,7 @@ class Cd(Application):
     Usage: cd [PATH]
         - PATH: A relative path to the target directory.
     """
+
     def execute(self, args: List[str], out: List[str]) -> None:
         """
         Executes the cd command

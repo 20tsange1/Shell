@@ -120,7 +120,6 @@ class TestGrep(unittest.TestCase):
         out = self.setup(
             ["AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"]
         )
-        expected_output = ""
         with self.assertRaises(ArgumentError):
             Grep().execute([], out)
         self.teardown()
@@ -129,7 +128,6 @@ class TestGrep(unittest.TestCase):
         out = self.setup(
             ["AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"]
         )
-        expected_output = ""
         with self.assertRaises(FileError):
             Grep().execute(["AAA", "invalid_file"], out)
         self.teardown()

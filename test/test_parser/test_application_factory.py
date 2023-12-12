@@ -1,6 +1,7 @@
 import unittest
 from application_factory import ApplicationFactory
 
+
 class TestApplicationFactory(unittest.TestCase):
     def test_safe_apps(self):
         expected_output = 24

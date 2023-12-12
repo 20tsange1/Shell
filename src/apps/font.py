@@ -6,11 +6,13 @@ from application import Application
 class Font(Application):
     """
     Changes the current font.
-    
+
     Usage: font [FONT]
-        - FONT: Specifies the style of the text displayed to one of the following:
+        - FONT: Specifies the style of the text displayed to one of \
+the following:
             - bold, italic, underline, crossed, dark, reversed, reset.
     """
+
     def execute(self, args: List[str], out: List[str]) -> None:
         """
         Changes the curent font

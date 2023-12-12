@@ -7,7 +7,6 @@ from error import ArgumentError, FlagError, DirectoryError
 
 
 class TestFind(unittest.TestCase):
-
     @classmethod
     def setup(self, files):
         self.test_dir = tempfile.TemporaryDirectory()
@@ -85,7 +84,7 @@ class TestFind(unittest.TestCase):
         expected_output = {"./a.txt\n"}
         self.assertEqual(expected_output, set(out))
         self.teardown()
-    
+
     def test_find_dir_name(self):
         out = self.setup(["a.txt", ["b.txt"]])
         Find().execute(["./", "-name", "sub_dir_1"], out)

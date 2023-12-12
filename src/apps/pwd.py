@@ -6,9 +6,10 @@ from application import Application
 class Pwd(Application):
     """
     Outputs the current working directory.
-    
+
     Usage: pwd
     """
+
     def execute(self, args: List[str], out: List[str]) -> None:
         """
         Executes the pwd command

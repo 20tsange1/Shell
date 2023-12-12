@@ -5,7 +5,6 @@ import readline
 from antlr.Comp0010ShellLexer import Comp0010ShellLexer
 from antlr.Comp0010ShellParser import Comp0010ShellParser
 from antlr4 import InputStream, CommonTokenStream
-from collections import deque
 from error import (
     ArgumentError,
     FlagError,
@@ -38,7 +37,7 @@ def parse(cmdline: str) -> List[str]:
     return [item for sublist in visitor.output for item in sublist]
 
 
-def catch_error(cmdline: str) -> None: # pragma: no cover
+def catch_error(cmdline: str) -> None:  # pragma: no cover
     """
     Catches errors for interactive mode.
 
@@ -49,11 +48,21 @@ def catch_error(cmdline: str) -> None: # pragma: no cover
         out = parse(cmdline)
         for result in out:
             print(result, end="")
-    except (ValueError, ArgumentError, ApplicationError, DirectoryError, FileError, FlagError, RedirectError) as e:
-        print(f"The following error has occurred: [{e.__class__.__name__}] {e}")
+    except (
+        ValueError,
+        ArgumentError,
+        ApplicationError,
+        DirectoryError,
+        FileError,
+        FlagError,
+        RedirectError,
+    ) as e:
+        print(
+            f"The following error has occurred: [{e.__class__.__name__}] {e}"
+        )
 
 
-def interactive_mode() -> None: # pragma: no cover
+def interactive_mode() -> None:  # pragma: no cover
     """
     Enters the interactive mode.
     """
@@ -64,12 +73,12 @@ def interactive_mode() -> None: # pragma: no cover
             readline.set_auto_history(True)
             readline.parse_and_bind("tab: complete")
             catch_error(cmdline)
-        except (KeyboardInterrupt):
+        except KeyboardInterrupt:
             print("\nExiting shell. Goodbye! 👋")
             break
 
 
-def run() -> None: # pragma: no cover
+def run() -> None:  # pragma: no cover
     """
     Runs the shell.
     """
@@ -86,5 +95,5 @@ def run() -> None: # pragma: no cover
         interactive_mode()
 
 
-if __name__ == "__main__": # pragma: no cover
+if __name__ == "__main__":  # pragma: no cover
     run()

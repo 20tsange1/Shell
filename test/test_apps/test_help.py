@@ -2,10 +2,12 @@ import unittest
 from apps.help import Help
 from error import ArgumentError
 
+
 class TestHelp(unittest.TestCase):
     def test_help(self):
         out = []
-        expected_output = """
+        expected_output = (
+            """
     Usage 🚀:
 
         <command> [<args>] : Run one of the available commands.
@@ -17,10 +19,13 @@ class TestHelp(unittest.TestCase):
 
     The following commands are available 🤖:
 
-        pwd, cd, echo, ls, ls, cat, head, tail, grep, sort, cut, find, uniq, mkdir, touch, rm, rmdir, mv, cp, color, font, sed, wc, exit
+        pwd, cd, echo, ls, ls, cat, head, tail, grep, sort, cut, find, \
+uniq, mkdir, touch, rm, rmdir, mv, cp, color, font, sed, wc, exit
 
     Use <command> --help or <command> -h for more information about a command.
-    """ + "\n"
+    """
+            + "\n"
+        )
         Help().execute([], out)
         self.assertEqual(expected_output, "".join(out))
 

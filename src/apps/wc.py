@@ -7,14 +7,16 @@ from error import FileError, FlagError
 class Wc(Application):
     """
     Counts the number of lines, words, and characters in a file or stdin.
-    
+
     Usage: wc [OPTION] [FILE]?
-        - [OPTION]: The flags to be passed. If not specified, returns all three counts.
+        - [OPTION]: The flags to be passed. If not specified, \
+returns all three counts.
             - [-l]: Returns the number of lines.
             - [-w]: Returns the number of words.
             - [-m]: Returns the number of characters.
         - [FILE]: The name of the file. If not specified, uses stdin.
     """
+
     @staticmethod
     def parse_arguments(args: List[str]) -> Tuple[List[str], List[str]]:
         """

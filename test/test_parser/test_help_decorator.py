@@ -3,6 +3,7 @@ from help_decorator import HelpDecorator
 from apps.uniq import Uniq
 from application_factory import ApplicationFactory
 
+
 class TestApplicationFactory(unittest.TestCase):
     def test_helper_uniq(self):
         out = []
@@ -18,4 +19,3 @@ class TestApplicationFactory(unittest.TestCase):
         self.assertFalse(
             isinstance(appfactory.application_map["uniq"], HelpDecorator)
         )
-    

@@ -111,6 +111,13 @@ class TestMv(unittest.TestCase):
             Mv().execute(["source.txt", "destination.txt"], out)
         self.teardown()
 
+    def test_mv_destination_file_does_not_exist(self):
+        out = self.setup(["source.txt"])
+        Mv().execute(["-f", "source.txt", "destination.txt"], out)
+        with self.assertRaises(FileError):
+            Mv().execute(["source.txt", "destination.txt"], out)
+        self.teardown()
+
     def test_mv_error_when_not_force_overwrite(self):
         out = self.setup(["source.txt", "destination.txt"])
         with self.assertRaises(FileError):

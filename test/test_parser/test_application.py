@@ -1,10 +1,10 @@
 import unittest
-import os
 import tempfile
 from pathlib import Path
 from application import Application
-from error import ApplicationError, ArgumentError
+from error import ApplicationError
 from unittest.mock import patch
+
 
 class TestApplication(unittest.TestCase):
     @classmethod

@@ -8,11 +8,13 @@ class Color(Application):
     Changes the font color of the shell.
 
     Usage: color [COLOR]
-        - COLOR: Specifies the color of text displayed: (Not all supported colors are displayed below)
+        - COLOR: Specifies the color of text displayed: \
+(Not all supported colors are displayed below)
             - [red]: changes the text to red.
             - [purple]: changes the text to purple.
             - [reset]: resets the text color.
     """
+
     def execute(self, args: List[str], out: List[str]) -> None:
         """
         Executes the color command

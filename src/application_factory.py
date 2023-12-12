@@ -64,8 +64,10 @@ class ApplicationFactory:
         for name, app in self.application_map.items():
             unsafe[f"_{name}"] = UnsafeDecorator(app)
         self.application_map.update(unsafe)
-    
+
     def add_helpful_applications(self):
         for name in self.application_map.keys():
-            self.application_map[name] = HelpDecorator(self.application_map[name])
+            self.application_map[name] = HelpDecorator(
+                self.application_map[name]
+            )
         self.application_map["help"] = Help()

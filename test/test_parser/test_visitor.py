@@ -43,15 +43,15 @@ class TestVisitor(unittest.TestCase):
         self.teardown()
 
     def test_redirection_stdout(self):
-        out = self.setup([""])
-        out = parse("echo foo > " + self.test_file[0])
+        self.setup([""])
+        parse("echo foo > " + self.test_file[0])
         with open(self.test_file[0], "r") as f:
             self.assertEqual("foo\n", f.read())
         self.teardown()
 
     def test_redirection_stdout_append(self):
-        out = self.setup(["ABCDEFFEDCBA\nABCDDCBA\n"])
-        out = parse("echo ABCD >> " + self.test_file[0])
+        self.setup(["ABCDEFFEDCBA\nABCDDCBA\n"])
+        parse("echo ABCD >> " + self.test_file[0])
         with open(self.test_file[0], "r") as f:
             self.assertEqual("ABCDEFFEDCBA\nABCDDCBA\nABCD\n", f.read())
         self.teardown()
@@ -133,10 +133,10 @@ class TestVisitor(unittest.TestCase):
         self.teardown()
 
     def test_globbing_no_match(self):
-        out = self.setup([])
+        self.setup([])
         os.chdir(self.temp_path)
         with self.assertRaises(ArgumentError):
-            out = parse("echo *")
+            parse("echo *")
         self.teardown()
 
     def test_no_subarg(self):

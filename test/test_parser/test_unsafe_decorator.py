@@ -2,9 +2,9 @@ import tempfile
 import unittest
 from pathlib import Path
 from apps.uniq import Uniq
-from application import Application
 from unsafe_decorator import UnsafeDecorator
 from application_factory import ApplicationFactory
+
 
 class TestUnsafe(unittest.TestCase):
     def setup(self, contents):
@@ -29,7 +29,9 @@ class TestUnsafe(unittest.TestCase):
 
     def test_unsafe_uniq_throw(self):
         out = self.setup(["AAA\nAAA\nBBB\nBBB\nCCC\nCCC\n"])
-        expected_output = "An exception occurred: Wrong flags [uniq -i <file>?]\n"
+        expected_output = (
+            "An exception occurred: Wrong flags [uniq -i <file>?]\n"
+        )
         UnsafeDecorator(Uniq()).execute(["-c", self.test_file[0]], out)
         self.assertEqual(
             expected_output,
@@ -40,9 +42,7 @@ class TestUnsafe(unittest.TestCase):
     def test_safe_application(self):
         self.setup([])
         appfactory = ApplicationFactory(unsafe=False)
-        self.assertFalse(
-            isinstance(appfactory.application_map["uniq"], Uniq)
-        )
+        self.assertFalse(isinstance(appfactory.application_map["uniq"], Uniq))
         self.teardown()
 
     def test_unsafe_application(self):

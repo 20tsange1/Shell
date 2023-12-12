@@ -6,15 +6,18 @@ class Help(Application):
     """
     Prints the help message.
     """
+
     def execute(self, args=None, out=None) -> None:
         """
         Executes the help command
         """
         if len(args) > 0:
-            raise ArgumentError("Wrong number of command line arguments [help]")
-            
+            raise ArgumentError(
+                "Wrong number of command line arguments [help]"
+            )
+
         out.append(
-    """
+            """
     Usage 🚀:
 
         <command> [<args>] : Run one of the available commands.
@@ -26,8 +29,10 @@ class Help(Application):
 
     The following commands are available 🤖:
 
-        pwd, cd, echo, ls, ls, cat, head, tail, grep, sort, cut, find, uniq, mkdir, touch, rm, rmdir, mv, cp, color, font, sed, wc, exit
+        pwd, cd, echo, ls, ls, cat, head, tail, grep, sort, cut, \
+find, uniq, mkdir, touch, rm, rmdir, mv, cp, color, font, sed, wc, exit
 
     Use <command> --help or <command> -h for more information about a command.
-    """ + "\n"
+    """
+            + "\n"
         )

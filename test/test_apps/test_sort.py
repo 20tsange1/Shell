@@ -3,7 +3,6 @@ import unittest
 from pathlib import Path
 import sys
 import random
-import io
 from apps.sort import Sort
 from error import ArgumentError, FileError, FlagError
 from hypothesis import given, strategies as st
@@ -115,7 +114,9 @@ class TestSort(unittest.TestCase):
         self.teardown()
 
     def test_sort_stdin(self):
-        out = self.setup(["GGG\nBBB\nCCC\nDDD\nJJJ\nFFF\nEEE\nHHH\nAAA\nIII\n"])
+        out = self.setup(
+            ["GGG\nBBB\nCCC\nDDD\nJJJ\nFFF\nEEE\nHHH\nAAA\nIII\n"]
+        )
         expected_output = "AAA\nBBB\nCCC\nDDD\nEEE\nFFF\nGGG\nHHH\nIII\nJJJ\n"
         with patch("sys.stdin", open(self.test_file[0])):
             Sort().execute([], out)
@@ -123,7 +124,9 @@ class TestSort(unittest.TestCase):
         self.teardown()
 
     def test_sort_stdin_reverse(self):
-        out = self.setup(["GGG\nBBB\nCCC\nDDD\nJJJ\nFFF\nEEE\nHHH\nAAA\nIII\n"])
+        out = self.setup(
+            ["GGG\nBBB\nCCC\nDDD\nJJJ\nFFF\nEEE\nHHH\nAAA\nIII\n"]
+        )
         expected_output = "JJJ\nIII\nHHH\nGGG\nFFF\nEEE\nDDD\nCCC\nBBB\nAAA\n"
         with patch("sys.stdin", open(self.test_file[0])):
             Sort().execute(["-r"], out)

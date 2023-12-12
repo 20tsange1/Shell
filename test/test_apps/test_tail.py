@@ -110,9 +110,12 @@ class TestTail(unittest.TestCase):
     # Length of output property testing
     @given(
         st.lists(
-            st.text(min_size=1, alphabet=st.characters(
-                        whitelist_categories=("Ll", "Lu", "Nd"),
-                        )),
+            st.text(
+                min_size=1,
+                alphabet=st.characters(
+                    whitelist_categories=("Ll", "Lu", "Nd"),
+                ),
+            ),
             min_size=1,
         ),
         st.integers(min_value=1, max_value=100),

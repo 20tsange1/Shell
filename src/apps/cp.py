@@ -11,10 +11,12 @@ class Cp(Application):
     Usage: cp [OPTION] [SOURCE] [DESTINATION]
         - OPTION: Specifies the behaviour of cp:
             - [-f]: forces a file to be overwritten.
-            - [-r]: performs a recursive copy for directories (All subfiles and subdirectories copied).
+            - [-r]: performs a recursive copy for \
+directories (All subfiles and subdirectories copied).
         - SOURCE: Specifies the file/directory to be copied.
         - DESTINATION: Specifies the output file/directory.
     """
+
     @staticmethod
     def copy_file(
         source: str, destination: str, force: bool, recursive: bool

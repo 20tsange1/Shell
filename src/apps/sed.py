@@ -8,7 +8,7 @@ from application import Application
 class Sed(Application):
     """
     Replaces a string with another string in a file
-    
+
     Usage: sed [ARG] [FILE]
         - ARG: s/pattern/replacement_string/[g]?
             - [s]: Substitute
@@ -17,6 +17,7 @@ class Sed(Application):
             - [g]: Global flag to replace all occurrences
         - FILE: File to be modified
     """
+
     def execute(self, args: List[str], out: List[str]) -> None:
         """
         Executes the sed command

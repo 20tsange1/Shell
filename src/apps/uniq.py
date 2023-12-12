@@ -6,11 +6,12 @@ from application import Application
 class Uniq(Application):
     """
     Removes non-unique adjacent lines from input.
-    
+
     Usage: uniq [-i]? [FILE]?
         - [-i]: Ignores case.
         - FILE: The name of the file. If not specified, uses stdin.
     """
+
     @staticmethod
     def return_uniq(lines: List[str], ignore_case: bool) -> List[str]:
         """

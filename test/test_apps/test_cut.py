@@ -115,10 +115,7 @@ class TestCut(unittest.TestCase):
             ["-b", f"{check_start}-{check_end}", self.test_file[0]], out
         )
         expected_output = min((check_end - check_start) + 1, len(text))
-        self.assertLessEqual(
-            len(out[0][:-1]),
-            expected_output
-        )
+        self.assertLessEqual(len(out[0][:-1]), expected_output)
         self.teardown()
 
     # Subset Property testing

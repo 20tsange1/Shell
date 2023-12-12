@@ -6,11 +6,13 @@ from application import Application
 class Head(Application):
     """
     Returns first n lines of the input.
-    
+
     Usage: head [-n <num_lines>]? [FILE]?
-        - [-n <num_lines>]: The number of lines to be returned. If not specified, returns the first 10 lines.
+        - [-n <num_lines>]: The number of lines to be returned. \
+If not specified, returns the first 10 lines.
         - FILE: The name of the file. If not specified, uses stdin.
     """
+
     def execute(self, args: List[str], out: List[str]) -> None:
         """
         Executes the head command

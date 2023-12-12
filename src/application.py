@@ -4,9 +4,7 @@ from typing import List
 
 
 class Application:
-    def execute(
-        self, args: List[str], out: List[str]
-    ) -> None:
+    def execute(self, args: List[str], out: List[str]) -> None:
         raise ApplicationError("Calling parent class execute method")
 
     @staticmethod

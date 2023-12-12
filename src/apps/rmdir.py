@@ -7,10 +7,11 @@ from application import Application
 class Rmdir(Application):
     """
     Removes a directory and its contents.
-    
+
     Usage: rmdir [DIR]
         - DIR: The path of the directory to remove.
     """
+
     @staticmethod
     def is_directory_empty(path: str) -> bool:
         """

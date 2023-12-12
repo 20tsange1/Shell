@@ -302,7 +302,24 @@ Counts the number of lines, words, and characters in a file/stdin.
 In COMP0010 Shell, each application has an unsafe variant. An unsafe version of an application is an application that has the same semantics as the original application, but instead of raising exceptions, it prints the error message to its stdout. This feature can be used to prevent long sequences from terminating early when some intermediate commands fail. The names of unsafe applications are prefixed with `_`, e.g. `_ls` and `_grep`.
 
 ## UML Diagram
+
 ![](https://github.com/comp0010/comp0010-shell-python-p3/blob/master/UML_Diagram_Shell.png)
 
 ## Testing
-Our version of the COMP0010 Shell has both unit and property-based testing mechanisms. Test cases were made for all scenarios in all files that were written by us, where appropriate. This includes all of the applications, as well as the Visitor, the Unsafe decorator, and the Shell itself.
+
+Our version of the COMP0010 Shell has unit, property-based, and mutation testing mechanisms. Test cases were made for all scenarios in all files that were written by us, where appropriate. This includes all of the applications, as well as the application_factory, application, call, error, help_decorator, shell, unsafe_decorator, and visitor.
+
+## Mutation Testing
+
+Mutation testing, also known as code mutation testing, is a form of white box testing in which specific components of an application's source code are changed to ensure a software test suite can detect the changes. Our Shell implementation incorporates mutation testing via the Mutatest module.
+
+Though all unit and property-based tests pass (as they should), some mutation tests are expected to fail. For example, in mv, the length of args is always 2. Due to this, the mutation args[i + 1] to args[i - 1] will yield the same output.
+
+```python
+for i in range(0, len(args), 2):
+    source = args[i]
+    destination = args[i + 1] -> args[i - 1]
+    self.move_file(source, destination, force)
+```
+
+This occurs in a few different applications and has been dimissed accordingly.

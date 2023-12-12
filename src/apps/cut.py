@@ -5,15 +5,19 @@ from application import Application
 
 class Cut(Application):
     """
-    Cuts out sections from each line of a given file or stdin and prints the result to stdout.
+    Cuts out sections from each line of a given file \
+or stdin and prints the result to stdout.
 
     Usage: cut [OPTION] [FILE]
         - OPTION: Specifies the bytes to extract from each line:
             - [-b 1,2,3]: extracts 1st, 2nd and 3rd bytes.
-            - [-b 1-3,5-7]: extracts the bytes from 1st to 3rd and from 5th to 7th.
-            - [-b -3,5-]: extracts the bytes from the beginning of line to 3rd, and from 5th to the end of line.
+            - [-b 1-3,5-7]: extracts the bytes from 1st to 3rd \
+and from 5th to 7th.
+            - [-b -3,5-]: extracts the bytes from the beginning of \
+line to 3rd, and from 5th to the end of line.
         - FILE: A name of a file. If not specified, uses stdin.
     """
+
     @staticmethod
     def define_ranges(byte_ranges: List[str]) -> List[str]:
         """

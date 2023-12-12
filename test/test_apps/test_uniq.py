@@ -2,7 +2,6 @@ import tempfile
 import unittest
 from pathlib import Path
 import sys
-import io
 from apps.uniq import Uniq
 from error import ArgumentError, FlagError, FileError
 from hypothesis import given, strategies as st

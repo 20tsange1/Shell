@@ -99,7 +99,6 @@ class TestMkdir(unittest.TestCase):
         out = self.setup()
         if directory_name == "":
             return
-        expected_output = ""
         Mkdir().execute([directory_name], out)
         self.assertTrue(os.path.isdir(directory_name))
         self.teardown()

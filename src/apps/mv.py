@@ -7,13 +7,14 @@ from application import Application
 class Mv(Application):
     """
     Moves a file or directory to another location.
-    
+
     Usage: mv [OPTION] SOURCE DEST
         - OPTION: Specifies the behaviour of mv:
             - [-f]: forces a file to be overwritten.
         - SOURCE: Specifies the file/directory to be moved.
         - DEST: Specifies the output file/directory.
     """
+
     @staticmethod
     def move_file(source: str, destination: str, force: bool) -> None:
         """

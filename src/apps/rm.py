@@ -7,10 +7,11 @@ from application import Application
 class Rm(Application):
     """
     Removes a file.
-    
+
     Usage: rm [PATH]
         - PATH: The path to the file to remove.
     """
+
     def execute(self, args: List[str], out: List[str]) -> None:
         """
         Executes the rm command
